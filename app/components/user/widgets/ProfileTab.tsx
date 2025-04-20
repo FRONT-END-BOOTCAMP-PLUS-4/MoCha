@@ -1,5 +1,5 @@
 import ProfileSettings from '@/app/components/user/ui/ProfileSettings';
-import PasswoardBox from '@/app/components/user/ui/PasswordBox';
+import PasswoardBox from '@/app/components/user/ui/PasswordSettings';
 import { useFullModal } from '@/app/(core)/user/model/useFullModalStore';
 
 export default function ProfileTab() {
