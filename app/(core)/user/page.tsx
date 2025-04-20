@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { Button } from '@/app/shared/ui/button/Button';
 import ChartTab from '@/app/components/user/widgets/ChartTab';
 import ProfileTab from '@/app/components/user/widgets/ProfileTab';
-import FullModal from '@/app/components/user/ui/FullScreenModal';
+import FullScreenModal from '@/app/components/user/ui/FullScreenModal';
 
 export default function Mypage() {
   const [selectTab, setSelectTab] = useState(0);
@@ -38,7 +38,7 @@ export default function Mypage() {
       </div>
       <hr className="text-gray-4 my-2" />
       {tabList[selectTab].children}
-      <FullModal/>
+      <FullScreenModal/>
     </div>
   );
 }
