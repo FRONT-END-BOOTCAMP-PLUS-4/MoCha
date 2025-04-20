@@ -1,8 +1,9 @@
 'use client';
 import { useState } from 'react';
 import { Button } from '@/app/shared/ui/button/Button';
-import ChartTab from "@/app/components/user/widgets/ChartTab";
+import ChartTab from '@/app/components/user/widgets/ChartTab';
 import ProfileTab from '@/app/components/user/widgets/ProfileTab';
+import FullModal from '@/app/components/user/ui/FullModal';
 
 export default function Mypage() {
   const [selectTab, setSelectTab] = useState(0);
@@ -11,11 +12,11 @@ export default function Mypage() {
   const tabList = [
     {
       label: '통계차트',
-      children: <ChartTab/>,
+      children: <ChartTab />,
     },
     {
       label: '프로필설정',
-      children: <ProfileTab/>,
+      children: <ProfileTab />,
     },
   ];
 
@@ -37,6 +38,7 @@ export default function Mypage() {
       </div>
       <hr className="text-gray-4 my-2" />
       {tabList[selectTab].children}
+      <FullModal/>
     </div>
   );
 }
