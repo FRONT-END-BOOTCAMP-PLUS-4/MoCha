@@ -1,11 +1,15 @@
-import { useState } from 'react';
-import { Button } from '@/app/shared/ui/button/Button';
-import { useFullModal } from '@/app/(core)/user/model/useFullModalStore';
 
-export default function PasswoardSettings() {
-  const close = useFullModal((state) => state.action.close);
-  const [next, setNext] = useState(false);
-  const toggleNext = () => setNext(!next)
+import { Button } from '@/app/shared/ui/button/Button';
+
+type PasswordSettingsProps = {
+  close: () => void;
+  next: boolean;
+  toggleNext: () => void;
+}
+
+export default function PasswordSettings( props: PasswordSettingsProps ) {
+  const { close, next, toggleNext} = props;
+
   return (
     <div className="border-main bg-main-bg flex flex-col gap-3 rounded-lg border p-3">
       {next ? (

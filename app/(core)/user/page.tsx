@@ -1,9 +1,9 @@
 'use client';
 import { useState } from 'react';
 import { Button } from '@/app/shared/ui/button/Button';
-import ChartTab from '@/app/components/user/widgets/ChartTab';
-import ProfileTab from '@/app/components/user/widgets/ProfileTab';
-import FullScreenModal from '@/app/components/user/ui/FullScreenModal';
+import ChartTab from '@/app/components/user/composite/ChartTab';
+import SettingTab from '@/app/components/user/composite/SettingTab';
+import FullScreenModal from '@/app/components/user/composite/FullScreenModal';
 
 export default function Mypage() {
   const [selectTab, setSelectTab] = useState(0);
@@ -16,7 +16,7 @@ export default function Mypage() {
     },
     {
       label: '프로필설정',
-      children: <ProfileTab />,
+      children: <SettingTab />,
     },
   ];
 
