@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Button } from '@/app/shared/ui/button/Button';
-import { useFullModal } from '@/app/components/user/store/useFullModalStore';
+import { useFullModal } from '@/app/(core)/user/model/useFullModalStore';
 
 export default function PasswoardBox() {
   const close = useFullModal((state) => state.action.close);

@@ -1,6 +1,6 @@
 import Profile from '@/app/components/user/ui/Profile';
 import PasswoardBox from '@/app/components/user/ui/PasswordBox';
-import { useFullModal } from '@/app/components/user/store/useFullModalStore';
+import { useFullModal } from '@/app/(core)/user/model/useFullModalStore';
 
 export default function ProfileTab() {
   const open = useFullModal((state) => state.action.open);

@@ -1,5 +1,5 @@
 import { type ReactElement } from 'react';
-import { useFullModal } from '@/app/components/user/store/useFullModalStore';
+import { useFullModal } from '@/app/(core)/user/model/useFullModalStore';
 import { X } from 'lucide-react';
 import { cn } from '@/app/shared/utils/cn';
 
