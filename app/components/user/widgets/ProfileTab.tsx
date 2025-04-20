@@ -1,4 +1,4 @@
-import Profile from '@/app/components/user/ui/Profile';
+import ProfileSettings from '@/app/components/user/ui/ProfileSettings';
 import PasswoardBox from '@/app/components/user/ui/PasswordBox';
 import { useFullModal } from '@/app/(core)/user/model/useFullModalStore';
 
@@ -8,7 +8,7 @@ export default function ProfileTab() {
   return (
     <div>
       {/* 프로필 */}
-      <Profile />
+      <ProfileSettings />
       <hr className="text-gray-4 my-3" />
       <div className="flex flex-col gap-3 text-sm">
         <button

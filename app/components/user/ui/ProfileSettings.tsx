@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Button } from '@/app/shared/ui/button/Button';
 
-export default function Profile() {
+export default function ProfileSettings() {
   const [isEdit, setIsEdit] = useState(false);
   const toggleEdit = () => setIsEdit(!isEdit);
 
