@@ -6,13 +6,13 @@ import LogoImage from '@/app/components/auth/LogoImage';
 import MessageZone from '@/app/components/auth/MessageZone';
 import Title from '@/app/components/auth/Title';
 import Modal from '@/app/components/main/modal/TransactionModal';
+import { getFieldMessage } from '@/app/shared/constants/errorMessages';
 import { Button } from '@/app/shared/ui/button/Button';
 import Input from '@/app/shared/ui/input/Input';
 import Label from '@/app/shared/ui/label/Label';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
-import { errorMessages } from '../signup/page';
 
 function formatPhoneNumber(phone: string): string {
   return phone.replace(/(\d{3})(\d{3,4})(\d{4})/, '$1-$2-$3');
@@ -26,10 +26,9 @@ export default function FindIdPage() {
 
   const [foundEmail, setFoundEmail] = useState<string | null>(null);
 
-  const [errors, setErrors] = useState({
-    nickname: false,
-    phoneNumber: false,
-    notFound: false,
+  const [status, setStatus] = useState({
+    nickname: 'none',
+    phoneNumber: 'none',
   });
 
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -39,29 +38,26 @@ export default function FindIdPage() {
   const handleNicknameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
     setNickname(value);
-    setErrors((prev) => ({
+    setStatus((prev) => ({
       ...prev,
-      nickname: !isValidNickname(value),
-      notFound: false,
+      nickname: isValidNickname(value) ? 'valid' : 'invalid',
     }));
   };
 
   const handlePhoneNumberChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
     setPhoneNumber(value);
-    setErrors((prev) => ({
+    setStatus((prev) => ({
       ...prev,
-      phoneNumber: !isValidPhoneNumber(value),
-      notFound: false,
+      phoneNumber: isValidPhoneNumber(value) ? 'valid' : 'invalid',
     }));
   };
 
   const handleFindId = async () => {
     if (!isFormValid) {
-      setErrors({
-        nickname: !isValidNickname(nickname),
-        phoneNumber: !isValidPhoneNumber(phoneNumber),
-        notFound: false,
+      setStatus({
+        nickname: isValidNickname(nickname) ? 'valid' : 'invalid',
+        phoneNumber: isValidPhoneNumber(phoneNumber) ? 'valid' : 'invalid',
       });
       return;
     }
@@ -104,9 +100,13 @@ export default function FindIdPage() {
             onChange={handleNicknameChange}
             placeholder="닉네임을 입력해주세요."
             className="w-full"
-            error={errors.nickname}
+            error={status.nickname === 'invalid'}
           />
-          <MessageZone errorMessage={errors.nickname ? errorMessages.nickname : ''} />
+          <MessageZone
+            errorMessages={
+              status.nickname === 'invalid' ? [getFieldMessage('nickname', 'invalid')] : []
+            }
+          />
         </div>
 
         {/* 전화번호 */}
@@ -118,9 +118,13 @@ export default function FindIdPage() {
             onChange={handlePhoneNumberChange}
             placeholder="전화번호를 입력해주세요."
             className="w-full"
-            error={errors.phoneNumber}
+            error={status.phoneNumber === 'invalid'}
           />
-          <MessageZone errorMessage={errors.phoneNumber ? errorMessages.phoneNumber : ''} />
+          <MessageZone
+            errorMessages={
+              status.phoneNumber === 'invalid' ? [getFieldMessage('phoneNumber', 'invalid')] : []
+            }
+          />
         </div>
       </form>
 
@@ -176,7 +180,7 @@ export default function FindIdPage() {
       <div className="mt-2 mb-4">
         <Button
           intent={'primary'}
-          className="w-full rounded-md bg-blue-100 px-3 py-2 disabled:opacity-50"
+          className="w-full"
           onClick={handleFindId}
           disabled={!isFormValid}
         >

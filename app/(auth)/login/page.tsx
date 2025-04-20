@@ -1,66 +1,68 @@
 'use client';
 
+import { isValidEmail, isValidPassword } from '@/app/shared/utils/validation';
+import { ChangeEvent, FormEvent, useState } from 'react';
+
 import LogoImage from '@/app/components/auth/LogoImage';
 import MessageZone from '@/app/components/auth/MessageZone';
 import Title from '@/app/components/auth/Title';
+import { getFieldMessage } from '@/app/shared/constants/errorMessages';
 import { useAuthStore } from '@/app/shared/stores/authStore';
+import { FormStatus } from '@/app/shared/types/FormStatus';
 import { Button } from '@/app/shared/ui/button/Button';
 import Input from '@/app/shared/ui/input/Input';
 import Label from '@/app/shared/ui/label/Label';
-import { isValidEmail } from '@/app/shared/utils/validation';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { useState } from 'react';
-import { errorMessages } from '../signup/page';
 
 export default function LoginPage() {
   const router = useRouter();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [errors, setErrors] = useState({
-    email: false,
-    password: false,
-    login: false,
+
+  const [status, setStatus] = useState<FormStatus>({
+    email: 'none',
+    password: 'none',
+    login: 'none',
   });
 
   const isFormValid = isValidEmail(email) && password.trim().length > 0;
 
-  const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleEmailChange = (e: ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
     setEmail(value);
-    setErrors((prev) => ({
+    setStatus((prev) => ({
       ...prev,
-      email: !isValidEmail(value),
-      login: false,
+      email: isValidEmail(value) ? 'valid' : 'invalid',
+      login: 'none',
     }));
   };
 
-  const handlePasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handlePasswordChange = (e: ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
     setPassword(value);
-    setErrors((prev) => ({
+    setStatus((prev) => ({
       ...prev,
-      password: value.trim().length === 0,
-      login: false,
+      password: isValidPassword(value) ? 'valid' : 'invalid',
+      login: 'none',
     }));
   };
 
   const handleLogin = async () => {
-    // 유효성 검사
     const emailValid = isValidEmail(email);
-    const passwordValid = password.trim().length > 0;
+    const passwordValid = isValidPassword(password);
+
     if (!emailValid || !passwordValid) {
-      setErrors((prev) => ({
+      setStatus((prev) => ({
         ...prev,
-        email: !emailValid,
-        password: !passwordValid,
+        email: emailValid ? 'valid' : 'invalid',
+        password: passwordValid ? 'valid' : 'invalid',
       }));
       return;
     }
 
     try {
-      // 로그인 요청
       const res = await fetch('/api/auth/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -69,27 +71,23 @@ export default function LoginPage() {
 
       const data = await res.json();
 
-      // 실패 처리
       if (!res.ok || !data.success) {
-        setErrors((prev) => ({ ...prev, login: true }));
+        setStatus((prev) => ({ ...prev, login: 'invalid' }));
         return;
       }
 
-      const { access_token, user } = data;
-
-      // zustand 저장
+      const { access_token, refresh_token, user } = data;
       const { setAccessToken, setUser } = useAuthStore.getState();
       setAccessToken(access_token);
       setUser(user);
 
-      // localStorage 저장
       localStorage.setItem('access_token', access_token);
+      localStorage.setItem('refresh_token', refresh_token);
 
-      // 성공 시 이동
       router.push('/');
     } catch (error) {
       console.error('로그인 실패:', error);
-      setErrors((prev) => ({ ...prev, login: true }));
+      setStatus((prev) => ({ ...prev, login: 'error' }));
     }
   };
 
@@ -100,7 +98,7 @@ export default function LoginPage() {
 
       <form
         className="mb-4 flex flex-col"
-        onSubmit={(e) => {
+        onSubmit={(e: FormEvent<HTMLFormElement>) => {
           e.preventDefault();
           handleLogin();
         }}
@@ -109,47 +107,45 @@ export default function LoginPage() {
         <div>
           <Label label="이메일" htmlFor="email" />
           <Input
-            placeholder="이메일을 입력해주세요."
             id="email"
-            className="w-full"
             value={email}
             onChange={handleEmailChange}
-            error={errors.email}
+            placeholder="이메일을 입력해주세요."
+            className="w-full"
+            error={['invalid', 'error'].includes(status.email ?? '')}
           />
-          <MessageZone errorMessage={errors.email ? errorMessages.email : ''} />
+          <MessageZone
+            errorMessages={
+              ['invalid', 'error'].includes(status.email ?? '')
+                ? [getFieldMessage('email', status.email ?? 'none')]
+                : []
+            }
+          />
         </div>
 
         {/* 비밀번호 */}
         <div>
           <Label label="비밀번호" htmlFor="password" />
           <Input
-            placeholder="비밀번호를 입력해주세요."
             id="password"
-            className="w-full"
             type="password"
             value={password}
             onChange={handlePasswordChange}
-            error={errors.password}
+            placeholder="비밀번호를 입력해주세요."
+            className="w-full"
+            error={['invalid', 'error'].includes(status.password ?? '') || status.login === 'error'}
           />
           <MessageZone
-            errorMessage={
-              errors.password
-                ? errorMessages.password
-                : errors.login
-                  ? '이메일 또는 비밀번호가 올바르지 않습니다.'
-                  : ''
-            }
+            errorMessages={[
+              status.password === 'invalid' ? getFieldMessage('password', 'invalid') : '',
+              status.login === 'invalid' ? getFieldMessage('login', 'invalid') : '',
+            ].filter(Boolean)}
           />
         </div>
+
         {/* 로그인 버튼 */}
         <div className="mt-2">
-          <Button
-            intent={'primary'}
-            type="submit"
-            className="w-full"
-            disabled={!isFormValid}
-            onClick={handleLogin}
-          >
+          <Button intent="primary" type="submit" className="w-full" disabled={!isFormValid}>
             로그인
           </Button>
         </div>
@@ -165,7 +161,7 @@ export default function LoginPage() {
           아이디 찾기
         </Link>
         <span>|</span>
-        <Link href="/find-password" className="hover:cursor-pointer">
+        <Link href="/reset-password" className="hover:cursor-pointer">
           비밀번호 찾기
         </Link>
       </div>

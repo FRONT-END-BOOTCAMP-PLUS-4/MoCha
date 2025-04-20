@@ -12,23 +12,17 @@ import { ChangeEvent, useState } from 'react';
 import LogoImage from '@/app/components/auth/LogoImage';
 import MessageZone from '@/app/components/auth/MessageZone';
 import Title from '@/app/components/auth/Title';
+import { getFieldMessage } from '@/app/shared/constants/errorMessages';
+import { FormStatus } from '@/app/shared/types/FormStatus';
 import { Button } from '@/app/shared/ui/button/Button';
 import Input from '@/app/shared/ui/input/Input';
 import Label from '@/app/shared/ui/label/Label';
 import { useRouter } from 'next/navigation';
 
-export const errorMessages = {
-  email: '유효한 이메일 주소를 입력해주세요.',
-  code: '인증번호가 올바르지 않습니다.',
-  password: '8~20자, 영문과 숫자를 포함해 입력해주세요.',
-  passwordCheck: '비밀번호가 일치하지 않습니다.',
-  nickname: '2~8자의 한글, 영문, 숫자만 사용할 수 있어요.',
-  phoneNumber: '숫자만 입력해주세요. (예: 01012345678)',
-};
-
 export default function SignupPage() {
   const router = useRouter();
 
+  // 사용자 입력 상태
   const [user, setUser] = useState({
     email: '',
     password: '',
@@ -37,86 +31,86 @@ export default function SignupPage() {
     phoneNumber: '',
   });
 
+  // 인증번호 상태
   const [code, setCode] = useState('');
-  const [codeSent, setCodeSent] = useState(false); // 인증번호 발송 여부
 
-  const [verificationToken, setVerificationToken] = useState(''); // 서버에서 보내준 인증 코드
-
-  const [isCodeVerified, setIsCodeVerified] = useState(false); // 인증번호 확인 여부
-  const [isNicknameVerified, setIsNicknameVerified] = useState(false); // 닉네임 중복 확인 여부
-
-  const [errors, setErrors] = useState({
-    email: '', // '' | 'invalid' | 'duplicated'
-    code: false,
-    password: false,
-    passwordCheck: false,
-    nickname: '', // '' | 'invalid' | 'duplicated'
-    phoneNumber: false,
+  // 각 필드의 상태 (유효성 및 서버 응답에 따른 상태)
+  const [status, setStatus] = useState<FormStatus>({
+    email: 'none',
+    nickname: 'none',
+    password: 'none',
+    passwordCheck: 'none',
+    phoneNumber: 'none',
+    code: 'none',
   });
+
+  // 서버에서 받은 인증 토큰 (JWT 기반)
+  const [verificationToken, setVerificationToken] = useState('');
 
   const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
     const { id, value } = e.target;
 
-    setUser((prev) => {
-      const updatedUser = { ...prev, [id]: value };
+    setUser((prev) => ({ ...prev, [id]: value }));
 
-      setErrors((prevErr) => {
-        const newErrors = { ...prevErr };
-
-        if (id === 'email') newErrors.email = isValidEmail(value) ? '' : 'invalid';
-
-        if (id === 'password') {
-          newErrors.password = !isValidPassword(value);
-        }
-
-        if (id === 'passwordCheck') {
-          newErrors.passwordCheck = !doPasswordsMatch(updatedUser.password, value);
-        }
-
-        if (id === 'nickname') {
-          newErrors.nickname = isValidNickname(value) ? '' : 'invalid';
-          setIsNicknameVerified(false);
-        }
-
-        if (id === 'phoneNumber') {
-          newErrors.phoneNumber = !isValidPhoneNumber(value);
-        }
-
-        return newErrors;
-      });
-
-      return updatedUser;
-    });
+    switch (id) {
+      case 'email':
+        setStatus((prev) => ({ ...prev, email: isValidEmail(value) ? 'valid' : 'invalid' }));
+        break;
+      case 'password':
+        setStatus((prev) => ({ ...prev, password: isValidPassword(value) ? 'valid' : 'invalid' }));
+        break;
+      case 'passwordCheck':
+        setStatus((prev) => ({
+          ...prev,
+          passwordCheck: doPasswordsMatch(user.password, value) ? 'valid' : 'invalid',
+        }));
+        break;
+      case 'nickname':
+        setStatus((prev) => ({ ...prev, nickname: isValidNickname(value) ? 'valid' : 'invalid' }));
+        break;
+      case 'phoneNumber':
+        setStatus((prev) => ({
+          ...prev,
+          phoneNumber: isValidPhoneNumber(value) ? 'valid' : 'invalid',
+        }));
+        break;
+    }
   };
 
-  // 인증번호 발송
+  // 이메일 인증코드 요청
   const handleSendCode = async () => {
-    if (errors.email || !isValidEmail(user.email)) {
-      setErrors((prev) => ({ ...prev, email: 'invalid' }));
-      setCodeSent(false);
+    if (!isValidEmail(user.email)) {
+      setStatus((prev) => ({ ...prev, email: 'invalid' }));
       return;
     }
 
     try {
       const res = await fetch('/api/auth/send-code', {
         method: 'POST',
-        body: JSON.stringify({ email: user.email }),
         headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: user.email }),
       });
 
       const data = await res.json();
 
-      if (res.status === 409) {
-        setErrors((prev) => ({ ...prev, email: 'duplicated' }));
-        setCodeSent(false);
-      } else if (res.ok && data.token) {
-        setVerificationToken(data.token);
-        setErrors((prev) => ({ ...prev, email: '' }));
-        setCodeSent(true);
+      switch (res.status) {
+        case 200:
+          setVerificationToken(data.token);
+          setStatus((prev) => ({ ...prev, email: 'success' }));
+          break;
+        case 409:
+          setStatus((prev) => ({ ...prev, email: 'duplicated' }));
+          break;
+        case 400:
+          setStatus((prev) => ({ ...prev, email: 'invalid' }));
+          break;
+        default:
+          setStatus((prev) => ({ ...prev, email: 'error' }));
+          break;
       }
     } catch (err) {
       console.error('이메일 인증 요청 실패:', err);
-      setCodeSent(false);
+      setStatus((prev) => ({ ...prev, email: 'error' }));
     }
   };
 
@@ -130,34 +124,27 @@ export default function SignupPage() {
     try {
       const res = await fetch('/api/auth/verify-code', {
         method: 'POST',
-        body: JSON.stringify({
-          token: verificationToken,
-          code: code,
-        }),
+        body: JSON.stringify({ token: verificationToken, code }),
         headers: { 'Content-Type': 'application/json' },
       });
 
       const data = await res.json();
 
       if (res.ok && data.verified) {
-        setErrors((prev) => ({ ...prev, code: false }));
-        setIsCodeVerified(true);
+        setStatus((prev) => ({ ...prev, code: 'success' }));
       } else {
-        setErrors((prev) => ({ ...prev, code: true }));
-        setIsCodeVerified(false);
+        setStatus((prev) => ({ ...prev, code: 'invalid' }));
       }
     } catch (err) {
       console.error('인증번호 확인 실패:', err);
-      setErrors((prev) => ({ ...prev, code: true }));
-      setIsCodeVerified(false);
+      setStatus((prev) => ({ ...prev, code: 'error' }));
     }
   };
 
+  // 닉네임 중복 확인
   const handleCheckNickname = async () => {
-    setIsNicknameVerified(false);
-
-    if (errors.nickname || !isValidNickname(user.nickname)) {
-      setErrors((prev) => ({ ...prev, nickname: 'invalid' }));
+    if (!isValidNickname(user.nickname)) {
+      setStatus((prev) => ({ ...prev, nickname: 'invalid' }));
       return;
     }
 
@@ -168,43 +155,41 @@ export default function SignupPage() {
         body: JSON.stringify({ nickname: user.nickname }),
       });
 
-      if (res.status === 409) {
-        setErrors((prev) => ({ ...prev, nickname: 'duplicated' }));
-        setIsNicknameVerified(false);
-      } else if (res.ok) {
-        setErrors((prev) => ({ ...prev, nickname: '' }));
-        setIsNicknameVerified(true);
-      } else {
-        console.error('닉네임 중복 확인 실패:', await res.json());
-        setErrors((prev) => ({ ...prev, nickname: 'invalid' }));
+      switch (res.status) {
+        case 200:
+          setStatus((prev) => ({ ...prev, nickname: 'success' }));
+          break;
+        case 409:
+          setStatus((prev) => ({ ...prev, nickname: 'duplicated' }));
+          break;
+        case 400:
+          setStatus((prev) => ({ ...prev, nickname: 'invalid' }));
+          break;
+        default:
+          setStatus((prev) => ({ ...prev, nickname: 'error' }));
+          break;
       }
     } catch (err) {
-      console.error('닉네임 확인 중 서버 오류:', err);
-      setErrors((prev) => ({ ...prev, nickname: 'invalid' }));
+      console.error('닉네임 확인 실패:', err);
+      setStatus((prev) => ({ ...prev, nickname: 'error' }));
     }
   };
 
+  // 폼 전체 유효성 검사
   const isFormValid =
-    isValidEmail(user.email) &&
-    !errors.email &&
-    isValidPassword(user.password) &&
-    !errors.password &&
-    doPasswordsMatch(user.password, user.passwordCheck) &&
-    !errors.passwordCheck &&
-    isValidNickname(user.nickname) &&
-    !errors.nickname &&
-    isValidPhoneNumber(user.phoneNumber) &&
-    !errors.phoneNumber &&
-    isCodeVerified &&
-    isNicknameVerified;
+    status.email === 'success' &&
+    status.code === 'success' &&
+    status.password === 'valid' &&
+    status.passwordCheck === 'valid' &&
+    status.nickname === 'success' &&
+    status.phoneNumber === 'valid';
 
+  // 회원가입 요청
   const handleSignup = async () => {
-    if (!isFormValid || !verificationToken) {
-      return;
-    }
+    if (!isFormValid || !verificationToken) return;
 
     try {
-      const res = await fetch('/api/auth/signup', {
+      const res = await fetch('/api/user', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -213,19 +198,17 @@ export default function SignupPage() {
           nickname: user.nickname,
           phone_number: user.phoneNumber,
           token: verificationToken,
+          provider: 'local',
         }),
       });
 
       const data = await res.json();
-      console.log('data: ', data);
-
       if (!res.ok || !data.success) {
         alert(data.error || '회원가입에 실패했습니다.');
         return;
       }
 
-      alert('회원가입이 완료되었습니다!');
-      // router.push("/login");
+      router.push('/login');
     } catch (error) {
       console.error('회원가입 요청 오류:', error);
       alert('서버 오류로 회원가입에 실패했습니다.');
@@ -236,7 +219,7 @@ export default function SignupPage() {
     <div>
       <LogoImage />
       <Title>회원가입</Title>
-      <form className="mb-2 flex flex-col">
+      <form className="mb-2 flex flex-col" onSubmit={(e) => e.preventDefault()}>
         {/* 이메일 */}
         <div>
           <Label label="이메일" htmlFor="email" />
@@ -247,30 +230,27 @@ export default function SignupPage() {
               onChange={handleInputChange}
               placeholder="이메일을 입력해주세요."
               className="flex-1"
-              error={!!errors.email}
+              error={['invalid', 'duplicated', 'error'].includes(status.email ?? '')}
+              disabled={status.code === 'success'}
             />
             <Button
               intent={'primary'}
               type="button"
               className="w-full"
               onClick={handleSendCode}
-              disabled={errors.email === 'invalid' || !isValidEmail(user.email)}
+              disabled={status.email !== 'valid' || status.code === 'success'}
             >
               인증번호 발송
             </Button>
           </div>
           <MessageZone
-            errorMessage={
-              errors.email === 'invalid'
-                ? errorMessages.email
-                : errors.email === 'duplicated'
-                  ? '이미 존재하는 계정입니다.'
-                  : ''
+            errorMessages={
+              ['invalid', 'duplicated', 'error'].includes(status.email ?? '')
+                ? [getFieldMessage('email', status.email ?? 'none')]
+                : []
             }
-            successMessage={
-              isValidEmail(user.email) && errors.email === '' && codeSent
-                ? '인증번호가 발송되었습니다.'
-                : ''
+            successMessages={
+              status.email === 'success' ? [getFieldMessage('email', status.email)] : []
             }
           />
         </div>
@@ -283,21 +263,31 @@ export default function SignupPage() {
               id="code"
               value={code}
               onChange={(e) => setCode(e.target.value)}
-              placeholder="인증번호를 입력해주세요."
+              placeholder="6자리 인증번호를 입력해주세요."
+              maxLength={6}
               className="flex-1"
+              error={['invalid', 'error'].includes(status.code ?? '')}
+              disabled={status.code === 'success'}
             />
             <Button
               intent={'primary'}
               type="button"
               className="w-full rounded-md"
               onClick={handleVerifyCode}
+              disabled={status.code === 'success' || code.length !== 6}
             >
-              인증번호 확인
+              인증 확인
             </Button>
           </div>
           <MessageZone
-            errorMessage={errors.code ? errorMessages.code : ''}
-            successMessage={isCodeVerified ? '인증이 완료되었습니다.' : ''}
+            errorMessages={
+              ['invalid', 'error'].includes(status.code ?? '')
+                ? [getFieldMessage('code', status.code ?? 'none')]
+                : []
+            }
+            successMessages={
+              status.code === 'success' ? [getFieldMessage('code', status.code)] : []
+            }
           />
         </div>
 
@@ -306,14 +296,18 @@ export default function SignupPage() {
           <Label label="비밀번호" htmlFor="password" />
           <Input
             id="password"
+            type="password"
             value={user.password}
             onChange={handleInputChange}
             placeholder="비밀번호를 입력해주세요."
             className="w-full"
-            type="password"
-            error={errors.password}
+            error={status.password === 'invalid'}
           />
-          <MessageZone errorMessage={errors.password ? errorMessages.password : ''} />
+          <MessageZone
+            errorMessages={
+              status.password === 'invalid' ? [getFieldMessage('password', 'invalid')] : []
+            }
+          />
         </div>
 
         {/* 비밀번호 확인 */}
@@ -321,14 +315,20 @@ export default function SignupPage() {
           <Label label="비밀번호 확인" htmlFor="passwordCheck" />
           <Input
             id="passwordCheck"
+            type="password"
             value={user.passwordCheck}
             onChange={handleInputChange}
             placeholder="비밀번호를 다시 입력해주세요."
             className="w-full"
-            type="password"
-            error={errors.passwordCheck}
+            error={status.passwordCheck === 'invalid'}
           />
-          <MessageZone errorMessage={errors.passwordCheck ? errorMessages.passwordCheck : ''} />
+          <MessageZone
+            errorMessages={
+              status.passwordCheck === 'invalid'
+                ? [getFieldMessage('passwordCheck', 'invalid')]
+                : []
+            }
+          />
         </div>
 
         {/* 닉네임 */}
@@ -340,33 +340,27 @@ export default function SignupPage() {
               value={user.nickname}
               onChange={handleInputChange}
               placeholder="닉네임을 입력해주세요."
-              error={!!errors.nickname}
+              className="flex-1"
+              error={['invalid', 'duplicated', 'error'].includes(status.nickname ?? '')}
             />
             <Button
               intent={'primary'}
               type="button"
               className="w-full"
               onClick={handleCheckNickname}
-              disabled={errors.nickname === 'invalid' || !isValidNickname(user.nickname)}
+              disabled={status.nickname !== 'valid'}
             >
               중복 확인
             </Button>
           </div>
           <MessageZone
-            errorMessage={
-              errors.nickname === 'invalid'
-                ? errorMessages.nickname
-                : errors.nickname === 'duplicated'
-                  ? '이미 사용 중인 닉네임입니다.'
-                  : ''
+            errorMessages={
+              ['invalid', 'duplicated', 'error'].includes(status.nickname ?? '')
+                ? [getFieldMessage('nickname', status.nickname ?? 'none')]
+                : []
             }
-            successMessage={
-              user.nickname &&
-              isValidNickname(user.nickname) &&
-              errors.nickname === '' &&
-              isNicknameVerified
-                ? '사용 가능한 닉네임입니다.'
-                : ''
+            successMessages={
+              status.nickname === 'success' ? [getFieldMessage('nickname', status.nickname)] : []
             }
           />
         </div>
@@ -380,25 +374,30 @@ export default function SignupPage() {
             onChange={handleInputChange}
             placeholder="전화번호를 입력해주세요."
             className="w-full"
-            error={errors.phoneNumber}
+            error={status.phoneNumber === 'invalid'}
           />
-          <MessageZone errorMessage={errors.phoneNumber ? errorMessages.phoneNumber : ''} />
+          <MessageZone
+            errorMessages={
+              status.phoneNumber === 'invalid' ? [getFieldMessage('phoneNumber', 'invalid')] : []
+            }
+          />
+        </div>
+
+        <div className="mt-4 flex gap-4">
+          <Button intent={'cancel'} className="w-full" onClick={() => router.back()}>
+            취소
+          </Button>
+          <Button
+            type="button"
+            intent={'primary'}
+            className="w-full"
+            disabled={!isFormValid}
+            onClick={handleSignup}
+          >
+            회원가입
+          </Button>
         </div>
       </form>
-
-      <div className="flex gap-4">
-        <Button intent={'cancel'} className="w-full" onClick={() => router.back()}>
-          취소
-        </Button>
-        <Button
-          intent={'primary'}
-          className="w-full"
-          disabled={!isFormValid}
-          onClick={handleSignup}
-        >
-          회원가입
-        </Button>
-      </div>
     </div>
   );
 }

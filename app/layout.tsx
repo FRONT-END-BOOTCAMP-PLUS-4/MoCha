@@ -2,8 +2,8 @@
 
 import './globals.css';
 
-import { useAuthStore } from './shared/stores/authStore';
 import { useEffect } from 'react';
+import { useAuthStore } from './shared/stores/authStore';
 
 export default function RootLayout({
   children,
@@ -15,13 +15,14 @@ export default function RootLayout({
     const token = localStorage.getItem('access_token');
     if (!token) return;
 
-    fetch('/api/auth/me', {
+    fetch('/api/user', {
       headers: {
         Authorization: `Bearer ${token}`,
       },
     })
       .then((res) => res.json())
       .then((data) => {
+        console.log('data: ', data);
         if (data.success) {
           const { setUser, setAccessToken } = useAuthStore.getState();
           setAccessToken(token); // zustand에도 다시 저장
