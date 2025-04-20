@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { Button } from '@/app/shared/ui/button/Button';
 import ChartTab from '@/app/components/user/widgets/ChartTab';
 import ProfileTab from '@/app/components/user/widgets/ProfileTab';
-import FullModal from '@/app/components/user/ui/FullModal';
+import FullModal from '@/app/components/user/ui/FullScreenModal';
 
 export default function Mypage() {
   const [selectTab, setSelectTab] = useState(0);

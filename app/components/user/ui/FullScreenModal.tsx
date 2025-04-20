@@ -3,7 +3,7 @@ import { useFullModal } from '@/app/(core)/user/model/useFullModalStore';
 import { X } from 'lucide-react';
 import { cn } from '@/app/shared/utils/cn';
 
-export default function FullModal(): ReactElement {
+export default function FullScreenModal(): ReactElement {
   const { content, action } = useFullModal();
 
   return (
