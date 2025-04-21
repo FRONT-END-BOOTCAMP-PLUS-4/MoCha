@@ -6,7 +6,7 @@ export class SupabaseUserRepository implements UserRepository {
   async findByEmail(email: string): Promise<User | null> {
     const { data, error } = await supabase
       .from('user')
-      .select('id, email, nickname, phone_number, provider, password, deleted_at') // ✅ password 포함!
+      .select('id, email, nickname, phone_number, provider, password, deleted_at')
       .eq('email', email)
       .single();
 
@@ -18,7 +18,7 @@ export class SupabaseUserRepository implements UserRepository {
   async findById(id: string): Promise<User | null> {
     const { data, error } = await supabase
       .from('user')
-      .select('id, email, nickname, phone_number, provider') // 👈 여기선 password 필요 없음
+      .select('id, email, nickname, phone_number, provider')
       .eq('id', id)
       .single();
 
@@ -61,12 +61,16 @@ export class SupabaseUserRepository implements UserRepository {
     if (error) {
       throw new Error('비밀번호 업데이트 실패');
     }
+    if (error) {
+      throw new Error('비밀번호 업데이트 실패');
+    }
   }
 
   async create(user: Omit<User, 'id'>): Promise<User> {
     const { data, error } = await supabase.from('user').insert([user]).select().single();
 
     if (error || !data) {
+      throw new Error('회원가입 실패');
       throw new Error('회원가입 실패');
     }
 
