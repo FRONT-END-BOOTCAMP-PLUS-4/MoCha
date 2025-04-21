@@ -19,10 +19,8 @@ export default function PeriodBarChart(props: PeriodProps): ReactElement {
     <ResponsiveContainer width={'100%'} height={'100%'}>
       <BarChart data={periodList}>
         <CartesianGrid strokeDasharray="3 3"/>
-        {/* x좌표 이름정렬 */}
         <XAxis dataKey="name" />
         <YAxis
-          // orientation='left'
           type="number"
           tickCount={5}
           axisLine={false}
