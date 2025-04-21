@@ -1,12 +1,12 @@
 'use client';
 
-import { isValidNickname, isValidPhoneNumber } from '@/app/shared/utils/validation';
+import { isValidNickname, isValidPhoneNumber } from '@/app/shared/consts/validation';
 
 import LogoImage from '@/app/components/auth/LogoImage';
 import MessageZone from '@/app/components/auth/MessageZone';
 import Title from '@/app/components/auth/Title';
 import Modal from '@/app/components/main/modal/TransactionModal';
-import { getFieldMessage } from '@/app/shared/constants/errorMessages';
+import { getFieldMessage } from '@/app/shared/consts/errorMessages';
 import { Button } from '@/app/shared/ui/button/Button';
 import Input from '@/app/shared/ui/input/Input';
 import Label from '@/app/shared/ui/label/Label';

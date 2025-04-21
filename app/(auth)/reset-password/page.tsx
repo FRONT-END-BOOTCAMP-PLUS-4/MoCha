@@ -1,11 +1,11 @@
 'use client';
 
-import { doPasswordsMatch, isValidEmail, isValidPassword } from '@/app/shared/utils/validation';
+import { doPasswordsMatch, isValidEmail, isValidPassword } from '@/app/shared/consts/validation';
 
 import LogoImage from '@/app/components/auth/LogoImage';
 import MessageZone from '@/app/components/auth/MessageZone';
 import Title from '@/app/components/auth/Title';
-import { getFieldMessage } from '@/app/shared/constants/errorMessages';
+import { getFieldMessage } from '@/app/shared/consts/errorMessages';
 import { FieldStatus } from '@/app/shared/types/FormStatus';
 import { Button } from '@/app/shared/ui/button/Button';
 import Input from '@/app/shared/ui/input/Input';
