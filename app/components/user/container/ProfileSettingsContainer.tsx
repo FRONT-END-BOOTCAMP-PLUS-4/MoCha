@@ -1,4 +1,4 @@
-import { useState, useRef, type ChangeEvent, useEffect } from 'react';
+import { useState, useRef, type ChangeEvent } from 'react';
 import { isValidNickname, isValidPhoneNumber } from '@/app/shared/utils/validation';
 import ProfileSettings from '@/app/components/user/presentation/ProfileSettings';
 
