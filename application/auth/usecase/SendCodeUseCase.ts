@@ -10,6 +10,7 @@ export class SendCodeUseCase {
       .from('user')
       .select('id')
       .eq('email', email)
+      .is('deleted_at', null)
       .single();
 
     if (existingUser) {
