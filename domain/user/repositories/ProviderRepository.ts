@@ -1,3 +1,3 @@
 export interface ProviderRepository {
-  getIdByName(providerName: string): Promise<string>;
+  getIdByName(providerName: string): Promise<number>;
 }
