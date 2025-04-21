@@ -1,6 +1,7 @@
 import { verifyAccessToken, verifyEmailToken } from '@/infra/user/utils/jwt';
 import { NextRequest, NextResponse } from 'next/server';
 
+import { supabase } from '@/app/shared/lib/supabase';
 import { GetUserUseCase } from '@/application/user/usecase/GetUserUseCase';
 import { SignupUseCase } from '@/application/user/usecase/SignupUsecase';
 import { SupabaseUserRepository } from '@/infra/user/repositories/SupabaseUserRepository';
@@ -70,5 +71,33 @@ export async function POST(req: NextRequest) {
       { success: false, error: err.message || '회원가입 중 오류 발생' },
       { status: 400 }
     );
+  }
+}
+
+export async function PUT(req: NextRequest) {
+  try {
+    // 헤더에서 Authorization 값 읽기
+    const token = req.headers.get('authorization')?.replace('Bearer ', '');
+
+    if (!token) {
+      return NextResponse.json({ success: false, error: '토큰 없음' }, { status: 401 });
+    }
+
+    const payload = verifyAccessToken(token);
+    const { id } = payload;
+
+    const body = await req.json();
+    const { nickname, phone_number } = body;
+
+    const { error } = await supabase.from('user').update({ nickname, phone_number }).eq('id', id);
+
+    if (error) {
+      return NextResponse.json({ success: false, error: '업데이트 실패' }, { status: 500 });
+    }
+
+    return NextResponse.json({ success: true });
+  } catch (e) {
+    console.error('PUT /api/user 오류:', e);
+    return NextResponse.json({ success: false, error: '서버 오류' }, { status: 500 });
   }
 }

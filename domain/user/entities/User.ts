@@ -1,10 +1,9 @@
-export interface User {
-  id: string;
-  email: string;
-  password: string;
-  nickname: string;
-  phone_number: string;
-  provider: number;
-  created_at?: string;
-  deleted_at?: string;
+export class User {
+  constructor(
+    public readonly id: string,
+    public readonly email: string,
+    public readonly nickname: string | null,
+    public readonly phone_number: string | null,
+    public readonly provider: string
+  ) {}
 }

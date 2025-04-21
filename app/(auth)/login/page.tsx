@@ -1,12 +1,12 @@
 'use client';
 
-import { isValidEmail, isValidPassword } from '@/app/shared/utils/validation';
+import { isValidEmail, isValidPassword } from '@/app/shared/consts/validation';
 import { ChangeEvent, FormEvent, useState } from 'react';
 
 import LogoImage from '@/app/components/auth/LogoImage';
 import MessageZone from '@/app/components/auth/MessageZone';
 import Title from '@/app/components/auth/Title';
-import { getFieldMessage } from '@/app/shared/constants/errorMessages';
+import { getFieldMessage } from '@/app/shared/consts/errorMessages';
 import { useAuthStore } from '@/app/shared/stores/authStore';
 import { FormStatus } from '@/app/shared/types/FormStatus';
 import { Button } from '@/app/shared/ui/button/Button';
@@ -89,6 +89,10 @@ export default function LoginPage() {
       console.error('로그인 실패:', error);
       setStatus((prev) => ({ ...prev, login: 'error' }));
     }
+  };
+
+  const handleSocialLogin = (provider: 'google' | 'kakao') => {
+    window.location.href = `/api/auth/${provider}/redirect`;
   };
 
   return (
@@ -175,7 +179,10 @@ export default function LoginPage() {
         </div>
 
         <div className="flex flex-col justify-center gap-4">
-          <button className="border-gray-3 flex justify-center gap-2 rounded-md border bg-white px-4 py-3">
+          <button
+            onClick={() => handleSocialLogin('google')}
+            className="border-gray-3 flex justify-center gap-2 rounded-md border bg-white px-4 py-3 hover:cursor-pointer"
+          >
             <Image
               src="/images/social/google-logo.svg"
               alt="구글 로그인 아이콘"
@@ -184,7 +191,10 @@ export default function LoginPage() {
             />
             <div>구글로 로그인하기</div>
           </button>
-          <button className="flex justify-center gap-2 rounded-md bg-[#FEE500] px-4 py-3">
+          <button
+            onClick={() => handleSocialLogin('kakao')}
+            className="flex justify-center gap-2 rounded-md bg-[#FEE500] px-4 py-3 hover:cursor-pointer"
+          >
             <Image
               src="/images/social/kakao-logo.svg"
               alt="카카오 로그인 아이콘"

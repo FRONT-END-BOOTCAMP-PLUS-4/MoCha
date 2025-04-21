@@ -18,6 +18,7 @@ export default function ButtonList(): ReactElement {
 
       // 로컬스토리지 초기화
       localStorage.removeItem('access_token');
+      localStorage.removeItem('refresh_token');
 
       // 로그인 페이지로 이동
       router.push('/login');
