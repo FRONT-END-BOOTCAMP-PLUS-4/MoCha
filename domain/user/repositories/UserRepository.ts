@@ -7,4 +7,6 @@ export interface UserRepository {
   findByNicknameAndPhone(nickname: string, phoneNumber: string): Promise<User | null>;
   updatePasswordByEmail(email: string, hashedPassword: string): Promise<void>;
   create(user: Omit<User, 'id'>): Promise<User>;
+
+  findByEmailAndProvider(email: string, providerId: string): Promise<User | null>;
 }
