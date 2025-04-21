@@ -22,13 +22,8 @@ export type Category = {
   category: IncomeCategories | ExpenseCategories;
 };
 
-export type CategoryChartProps = {
+export type CategoryProps = {
   categoryList: Category[];
-};
-
-export type CategoryListProps = {
-    categoryList: Category[];
-    className?: string;
 };
 
 export type Period = {

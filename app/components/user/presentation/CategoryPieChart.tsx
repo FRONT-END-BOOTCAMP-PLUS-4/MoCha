@@ -2,7 +2,7 @@
 import { type ReactElement } from 'react';
 import dynamic from 'next/dynamic';
 import { PieChart, Pie, Cell, Tooltip } from 'recharts';
-import { type CategoryChartProps } from '@/app/shared/types/Chart';
+import { type CategoryProps } from '@/app/shared/types/Chart';
 import { categoryColorMap } from '@/app/shared/consts/categoryColorMap';
 
 const ResponsiveContainer = dynamic(
@@ -13,7 +13,7 @@ const ResponsiveContainer = dynamic(
   }
 );
 
-export default function CategoryChart(props: CategoryChartProps): ReactElement {
+export default function CategoryChart(props: CategoryProps): ReactElement {
   const { categoryList } = props;
 
   return (
