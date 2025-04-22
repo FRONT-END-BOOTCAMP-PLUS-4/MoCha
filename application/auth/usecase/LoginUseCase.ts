@@ -11,8 +11,13 @@ export class LoginUseCase {
     const { email, password } = dto;
 
     const user = await this.userRepo.findByEmail(email);
+
     if (!user || user.deleted_at) {
       throw new Error('존재하지 않는 계정입니다.');
+    }
+
+    if (!user.password) {
+      throw new Error('이 계정은 비밀번호로 로그인할 수 없습니다.');
     }
 
     const isMatch = await bcrypt.compare(password, user.password);
