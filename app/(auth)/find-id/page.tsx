@@ -8,7 +8,7 @@ import Title from '@/app/components/auth/Title';
 import Modal from '@/app/components/main/modal/TransactionModal';
 import { getFieldMessage } from '@/app/shared/consts/errorMessages';
 import { Button } from '@/app/shared/ui/button';
-import Input from '@/app/shared/ui/input/Input';
+import Input from '@/app/shared/ui/input';
 import Label from '@/app/shared/ui/label/Label';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
