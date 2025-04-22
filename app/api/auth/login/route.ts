@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 
-import { LoginUseCase } from '@/application/auth/usecase/LoginUseCase';
+import { LoginUseCase } from '@/application/usecases/auth/LoginUseCase';
 import { SupabaseUserRepository } from '@/infra/user/repositories/SupabaseUserRepository';
 
 export async function POST(req: NextRequest) {

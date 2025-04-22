@@ -3,7 +3,7 @@ import { generateAccessToken, generateRefreshToken } from '@/infra/user/utils/jw
 import { ProviderRepository } from '@/domain/repositories/ProviderRepository';
 import { UserRepository } from '@/domain/repositories/UserRepository';
 import { OAuthService } from '@/domain/services/OAuthService';
-import { SocialLoginDto } from '../dto/SocialLoginDto';
+import { SocialLoginDto } from './dto/SocialLoginDto';
 
 export class SocialLoginUseCase {
   constructor(

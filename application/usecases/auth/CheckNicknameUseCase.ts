@@ -1,5 +1,5 @@
 import { UserRepository } from '@/domain/repositories/UserRepository';
-import { CheckNicknameDto } from '../dto/CheckNicknameDto ';
+import { CheckNicknameDto } from './dto/CheckNicknameDto ';
 
 export class CheckNicknameUseCase {
   constructor(private readonly userRepo: UserRepository) {}

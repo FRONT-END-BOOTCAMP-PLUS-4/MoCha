@@ -1,5 +1,5 @@
 import { supabase } from '@/app/shared/lib/supabase';
-import { SignupDto } from '@/application/user/dto/SignupDto';
+import { SignupDto } from '@/application/usecases/user/dto/SignupDto';
 import { UserRepository } from '@/domain/repositories/UserRepository';
 import bcrypt from 'bcryptjs';
 

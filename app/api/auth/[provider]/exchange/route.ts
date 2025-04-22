@@ -2,8 +2,8 @@
 
 import { NextRequest, NextResponse } from 'next/server';
 
-import { SocialLoginDto } from '@/application/auth/dto/SocialLoginDto';
-import { SocialLoginUseCase } from '@/application/auth/usecase/SocialLoginUseCase';
+import { SocialLoginDto } from '@/application/usecases/auth/dto/SocialLoginDto';
+import { SocialLoginUseCase } from '@/application/usecases/auth/SocialLoginUseCase';
 import { OAuthServiceFactory } from '@/infra/oauth/OAuthServiceFactory';
 import { SupabaseProviderRepository } from '@/infra/user/repositories/SupabaseProviderRepository';
 import { SupabaseUserRepository } from '@/infra/user/repositories/SupabaseUserRepository';

@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 
-import { ResetPasswordUseCase } from '@/application/auth/usecase/ResetPasswordUseCase';
+import { ResetPasswordUseCase } from '@/application/usecases/auth/ResetPasswordUseCase';
 import { SupabaseUserRepository } from '@/infra/user/repositories/SupabaseUserRepository';
 
 export async function PUT(req: NextRequest) {

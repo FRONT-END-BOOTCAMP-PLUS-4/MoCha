@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 
-import { FindEmailUseCase } from '@/application/auth/usecase/FindEmailUseCase';
+import { FindEmailUseCase } from '@/application/usecases/auth/FindEmailUseCase';
 import { SupabaseUserRepository } from '@/infra/user/repositories/SupabaseUserRepository';
 
 export async function POST(req: NextRequest) {
