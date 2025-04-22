@@ -11,7 +11,7 @@ import { useAuthStore } from '@/app/shared/stores/authStore';
 import { FormStatus } from '@/app/shared/types/FormStatus';
 import { Button } from '@/app/shared/ui/button';
 import Input from '@/app/shared/ui/input';
-import Label from '@/app/shared/ui/label/Label';
+import Label from '@/app/shared/ui/label';
 import { useRouter } from 'next/navigation';
 
 export default function SocialInfoPage() {

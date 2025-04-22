@@ -9,7 +9,7 @@ import Modal from '@/app/components/main/modal/TransactionModal';
 import { getFieldMessage } from '@/app/shared/consts/errorMessages';
 import { Button } from '@/app/shared/ui/button';
 import Input from '@/app/shared/ui/input';
-import Label from '@/app/shared/ui/label/Label';
+import Label from '@/app/shared/ui/label';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';

@@ -9,7 +9,7 @@ import { getFieldMessage } from '@/app/shared/consts/errorMessages';
 import { FieldStatus } from '@/app/shared/types/FormStatus';
 import { Button } from '@/app/shared/ui/button';
 import Input from '@/app/shared/ui/input';
-import Label from '@/app/shared/ui/label/Label';
+import Label from '@/app/shared/ui/label';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 
