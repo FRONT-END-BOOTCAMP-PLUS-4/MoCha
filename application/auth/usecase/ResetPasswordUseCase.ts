@@ -1,5 +1,5 @@
 import { ResetPasswordDto } from '@/application/auth/dto/ResetPasswordDto';
-import { UserRepository } from '@/domain/user/repositories/UserRepository';
+import { UserRepository } from '@/domain/repositories/UserRepository';
 import { verifyEmailToken } from '@/infra/user/utils/jwt';
 import bcrypt from 'bcryptjs';
 

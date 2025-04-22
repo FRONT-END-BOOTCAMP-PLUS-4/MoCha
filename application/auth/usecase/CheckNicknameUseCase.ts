@@ -1,4 +1,4 @@
-import { UserRepository } from '@/domain/user/repositories/UserRepository';
+import { UserRepository } from '@/domain/repositories/UserRepository';
 import { CheckNicknameDto } from '../dto/CheckNicknameDto ';
 
 export class CheckNicknameUseCase {
