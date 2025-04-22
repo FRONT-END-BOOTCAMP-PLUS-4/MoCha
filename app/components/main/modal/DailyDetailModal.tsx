@@ -26,7 +26,7 @@ export default function DailyDetailModal({
           <SummaryHeader summary={{ totalIncome: income, totalExpense: expense }} />
         </div>
 
-        <ul className="divide-gray-3 h-full divide-y overflow-y-scroll">
+        <ul className="divide-gray-3 h-full divide-y overflow-y-auto">
           {transactions.map((item) => (
             <TransactionItem key={item.id} item={item} />
           ))}
