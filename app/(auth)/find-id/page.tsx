@@ -1,6 +1,7 @@
 'use client';
 
 import { isValidNickname, isValidPhoneNumber } from '@/app/shared/consts/validation';
+import { ChangeEvent, useState } from 'react';
 
 import LogoImage from '@/app/components/auth/LogoImage';
 import MessageZone from '@/app/components/auth/MessageZone';
@@ -12,7 +13,6 @@ import Input from '@/app/shared/ui/input/Input';
 import Label from '@/app/shared/ui/label/Label';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { useState } from 'react';
 
 function formatPhoneNumber(phone: string): string {
   return phone.replace(/(\d{3})(\d{3,4})(\d{4})/, '$1-$2-$3');
@@ -35,7 +35,7 @@ export default function FindIdPage() {
 
   const isFormValid = isValidNickname(nickname) && isValidPhoneNumber(phoneNumber);
 
-  const handleNicknameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleNicknameChange = (e: ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
     setNickname(value);
     setStatus((prev) => ({
@@ -44,7 +44,7 @@ export default function FindIdPage() {
     }));
   };
 
-  const handlePhoneNumberChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handlePhoneNumberChange = (e: ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
     setPhoneNumber(value);
     setStatus((prev) => ({

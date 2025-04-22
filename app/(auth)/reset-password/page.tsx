@@ -1,39 +1,69 @@
 'use client';
 
 import { doPasswordsMatch, isValidEmail, isValidPassword } from '@/app/shared/consts/validation';
+import { ChangeEvent, useState } from 'react';
 
 import LogoImage from '@/app/components/auth/LogoImage';
 import MessageZone from '@/app/components/auth/MessageZone';
 import Title from '@/app/components/auth/Title';
 import { getFieldMessage } from '@/app/shared/consts/errorMessages';
+import useIsHide from '@/app/shared/hooks/useIsHide';
 import { FieldStatus } from '@/app/shared/types/FormStatus';
 import { Button } from '@/app/shared/ui/button/Button';
 import Input from '@/app/shared/ui/input/Input';
+import PasswordInput from '@/app/shared/ui/input/PasswordInput';
 import Label from '@/app/shared/ui/label/Label';
 import { useRouter } from 'next/navigation';
-import { useState } from 'react';
 
 export default function FindPasswordPage() {
   const router = useRouter();
+  const { isHide, onToggle } = useIsHide();
 
-  const [email, setEmail] = useState('');
-  const [code, setCode] = useState('');
-  const [verificationToken, setVerificationToken] = useState('');
+  // 통합된 입력 상태
+  const [form, setForm] = useState({
+    email: '',
+    code: '',
+    password: '',
+    passwordCheck: '',
+  });
 
-  const [isVerified, setIsVerified] = useState(false);
-
-  const [password, setPassword] = useState('');
-  const [passwordCheck, setPasswordCheck] = useState('');
-
-  const [status, setStatus] = useState({
+  // 각 필드 상태
+  const [status, setStatus] = useState<Record<keyof typeof form, FieldStatus>>({
     email: 'none',
     code: 'none',
     password: 'none',
     passwordCheck: 'none',
   });
 
+  const [verificationToken, setVerificationToken] = useState('');
+  const [isVerified, setIsVerified] = useState(false);
+
+  // 공통 인풋 변경 핸들러
+  const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
+    const { id, value } = e.target;
+    setForm((prev) => ({ ...prev, [id]: value }));
+
+    switch (id) {
+      case 'email':
+        setStatus((prev) => ({ ...prev, email: isValidEmail(value) ? 'valid' : 'invalid' }));
+        break;
+      case 'password':
+        setStatus((prev) => ({ ...prev, password: isValidPassword(value) ? 'valid' : 'invalid' }));
+        break;
+      case 'passwordCheck':
+        setStatus((prev) => ({
+          ...prev,
+          passwordCheck: doPasswordsMatch(form.password, value) ? 'valid' : 'invalid',
+        }));
+        break;
+      case 'code':
+        setStatus((prev) => ({ ...prev, code: 'none' }));
+        break;
+    }
+  };
+
   const handleSendVerificationCode = async () => {
-    if (!isValidEmail(email)) {
+    if (!isValidEmail(form.email)) {
       setStatus((prev) => ({ ...prev, email: 'invalid' }));
       return;
     }
@@ -42,14 +72,13 @@ export default function FindPasswordPage() {
       const res = await fetch('/api/auth/send-code/reset-password', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email }),
+        body: JSON.stringify({ email: form.email }),
       });
 
       const data = await res.json();
 
       if (!res.ok) {
         setStatus((prev) => ({ ...prev, email: 'error' }));
-
         return;
       }
 
@@ -62,7 +91,7 @@ export default function FindPasswordPage() {
   };
 
   const handleVerifyCode = async () => {
-    if (!verificationToken || !code) {
+    if (!verificationToken || !form.code) {
       setStatus((prev) => ({ ...prev, code: 'invalid' }));
       return;
     }
@@ -70,7 +99,7 @@ export default function FindPasswordPage() {
     try {
       const res = await fetch('/api/auth/verify-code', {
         method: 'POST',
-        body: JSON.stringify({ token: verificationToken, code }),
+        body: JSON.stringify({ token: verificationToken, code: form.code }),
         headers: { 'Content-Type': 'application/json' },
       });
 
@@ -91,8 +120,8 @@ export default function FindPasswordPage() {
   };
 
   const handleChangePassword = async () => {
-    const passwordValid = isValidPassword(password);
-    const passwordMatch = doPasswordsMatch(password, passwordCheck);
+    const passwordValid = isValidPassword(form.password);
+    const passwordMatch = doPasswordsMatch(form.password, form.passwordCheck);
 
     if (!passwordValid || !passwordMatch) {
       setStatus((prev) => ({
@@ -108,10 +137,10 @@ export default function FindPasswordPage() {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          email,
-          password,
+          email: form.email,
+          password: form.password,
           token: verificationToken,
-          code,
+          code: form.code,
         }),
       });
 
@@ -134,15 +163,9 @@ export default function FindPasswordPage() {
         <Label label="이메일" htmlFor="email" />
         <Input
           id="email"
+          value={form.email}
+          onChange={handleInputChange}
           placeholder="이메일을 입력해주세요."
-          value={email}
-          onChange={(e) => {
-            setEmail(e.target.value);
-            setStatus((prev) => ({
-              ...prev,
-              email: isValidEmail(e.target.value) ? 'valid' : 'invalid',
-            }));
-          }}
           className="w-full"
           error={['invalid', 'error'].includes(status.email)}
           disabled={isVerified}
@@ -156,10 +179,10 @@ export default function FindPasswordPage() {
           successMessages={status.email === 'success' ? [getFieldMessage('email', 'success')] : []}
         />
         <Button
-          intent={'primary'}
+          intent="primary"
           className="mt-2 w-full"
           onClick={handleSendVerificationCode}
-          disabled={isVerified || !isValidEmail(email)}
+          disabled={isVerified || !isValidEmail(form.email)}
         >
           인증번호 발송
         </Button>
@@ -170,12 +193,9 @@ export default function FindPasswordPage() {
         <Label label="인증번호" htmlFor="code" />
         <Input
           id="code"
-          placeholder="인증번호를 입력해주세요."
-          value={code}
-          onChange={(e) => {
-            setCode(e.target.value);
-            setStatus((prev) => ({ ...prev, code: 'none' }));
-          }}
+          value={form.code}
+          onChange={handleInputChange}
+          placeholder="6자리 인증번호를 입력해주세요."
           maxLength={6}
           className="w-full"
           error={['invalid', 'error'].includes(status.code)}
@@ -190,39 +210,35 @@ export default function FindPasswordPage() {
           successMessages={status.code === 'success' ? [getFieldMessage('code', 'success')] : []}
         />
         <Button
-          intent={'primary'}
+          intent="primary"
           className="mt-2 w-full"
           onClick={handleVerifyCode}
           disabled={isVerified}
         >
           인증번호 확인
         </Button>
+
         {!isVerified && (
-          <Button intent={'cancel'} className="mt-4 w-full" onClick={() => router.back()}>
+          <Button intent="cancel" className="mt-4 w-full" onClick={() => router.back()}>
             취소
           </Button>
         )}
       </div>
 
-      {/* 인증 성공 시 비밀번호 변경 UI */}
+      {/* 인증 성공 후 비밀번호 변경 UI */}
       {isVerified && (
         <div className="mt-3">
           <div>
             <Label label="비밀번호" htmlFor="password" />
-            <Input
+            <PasswordInput
               id="password"
-              type="password"
               placeholder="비밀번호를 입력해주세요."
-              value={password}
-              onChange={(e) => {
-                setPassword(e.target.value);
-                setStatus((prev) => ({
-                  ...prev,
-                  password: isValidPassword(e.target.value) ? 'valid' : 'invalid',
-                }));
-              }}
-              className="w-full"
-              error={status.password === 'invalid' || status.password === 'error'}
+              value={form.password}
+              onInputChange={handleInputChange}
+              error={status.password}
+              isHide={isHide}
+              onToggle={onToggle}
+              autoComplete="new-password"
             />
             <MessageZone
               errorMessages={
@@ -235,20 +251,15 @@ export default function FindPasswordPage() {
 
           <div className="mt-1">
             <Label label="비밀번호 확인" htmlFor="passwordCheck" />
-            <Input
+            <PasswordInput
               id="passwordCheck"
-              type="password"
               placeholder="비밀번호를 다시 입력해주세요."
-              value={passwordCheck}
-              onChange={(e) => {
-                setPasswordCheck(e.target.value);
-                setStatus((prev) => ({
-                  ...prev,
-                  passwordCheck: doPasswordsMatch(password, e.target.value) ? 'valid' : 'invalid',
-                }));
-              }}
-              className="w-full"
-              error={status.passwordCheck === 'invalid'}
+              value={form.passwordCheck}
+              onInputChange={handleInputChange}
+              error={status.passwordCheck}
+              isHide={isHide}
+              onToggle={onToggle}
+              autoComplete="new-password"
             />
             <MessageZone
               errorMessages={
@@ -260,14 +271,17 @@ export default function FindPasswordPage() {
           </div>
 
           <div className="mt-3 flex gap-4">
-            <Button intent={'cancel'} className="w-full" onClick={() => router.back()}>
+            <Button intent="cancel" className="w-full" onClick={() => router.back()}>
               취소
             </Button>
             <Button
-              intent={'primary'}
+              intent="primary"
               className="w-full"
               onClick={handleChangePassword}
-              disabled={!isValidPassword(password) || !doPasswordsMatch(password, passwordCheck)}
+              disabled={
+                !isValidPassword(form.password) ||
+                !doPasswordsMatch(form.password, form.passwordCheck)
+              }
             >
               변경
             </Button>
