@@ -1,9 +1,9 @@
 import { type RefObject, type ChangeEvent } from 'react';
-import { Button } from '@/app/shared/ui/button/Button';
+import { Button } from '@/app/shared/ui/button';
 import { cn } from '@/app/shared/utils/cn';
 
 type ProfileSettingsProps = {
-  userInfo: {userEmail: string, userNickName:string, userPhone:string}
+  userInfo: { userEmail: string; userNickName: string; userPhone: string };
   isEdit: boolean;
   toggleEdit: () => void;
   nickNameRef: RefObject<HTMLInputElement | null>;
@@ -14,7 +14,16 @@ type ProfileSettingsProps = {
 };
 
 export default function ProfileSettings(props: ProfileSettingsProps) {
-  const { userInfo, isEdit, toggleEdit, nickNameRef, nickNameValidation, phoneRef, phoneValidation, checkValidation } = props;
+  const {
+    userInfo,
+    isEdit,
+    toggleEdit,
+    nickNameRef,
+    nickNameValidation,
+    phoneRef,
+    phoneValidation,
+    checkValidation,
+  } = props;
 
   return (
     <div
@@ -33,45 +42,49 @@ export default function ProfileSettings(props: ProfileSettingsProps) {
             readOnly={true}
           />
         </div>
-          <div className="flex gap-1">
-            <label htmlFor="userNickName" className="min-w-20">
-              닉네임
-            </label>
-            <input
-              type="text"
-              id="userNickName"
-              name="userNickName"
-              ref={nickNameRef}
-              defaultValue={userInfo.userNickName}
-              placeholder='2~8자의 한글, 영문, 숫자만 사용할 수 있어요.'
-              onChange={checkValidation}
-              className={cn('grow border-b-2 border-transparent outline-none', {
-                'border-gray-5 focus:border-main': isEdit,
-              })}
-              readOnly={!isEdit}
-            />
-          </div>
-          <div className="flex gap-1">
-            <label htmlFor="userPhone" className="min-w-20">
-              전화번호
-            </label>
-            <input
-              type="text"
-              id="userPhone"
-              name="userPhone"
-              ref={phoneRef}
-              defaultValue={userInfo.userPhone}
-              placeholder='숫자만 입력해주세요. (예: 01012345678)'
-              onChange={checkValidation}
-              className={cn('grow border-b-2 border-transparent outline-none', {
-                'border-gray-5 focus:border-main': isEdit,
-              })}
-              readOnly={!isEdit}
-            />
-          </div>
-        
-        {nickNameValidation && <p className="text-error text-sm">2~8자의 한글, 영문, 숫자만 사용할 수 있어요.</p>}
-        {phoneValidation && <p className="text-error text-sm">숫자만 입력해주세요. (예: 01012345678)</p>}
+        <div className="flex gap-1">
+          <label htmlFor="userNickName" className="min-w-20">
+            닉네임
+          </label>
+          <input
+            type="text"
+            id="userNickName"
+            name="userNickName"
+            ref={nickNameRef}
+            defaultValue={userInfo.userNickName}
+            placeholder="2~8자의 한글, 영문, 숫자만 사용할 수 있어요."
+            onChange={checkValidation}
+            className={cn('grow border-b-2 border-transparent outline-none', {
+              'border-gray-5 focus:border-main': isEdit,
+            })}
+            readOnly={!isEdit}
+          />
+        </div>
+        <div className="flex gap-1">
+          <label htmlFor="userPhone" className="min-w-20">
+            전화번호
+          </label>
+          <input
+            type="text"
+            id="userPhone"
+            name="userPhone"
+            ref={phoneRef}
+            defaultValue={userInfo.userPhone}
+            placeholder="숫자만 입력해주세요. (예: 01012345678)"
+            onChange={checkValidation}
+            className={cn('grow border-b-2 border-transparent outline-none', {
+              'border-gray-5 focus:border-main': isEdit,
+            })}
+            readOnly={!isEdit}
+          />
+        </div>
+
+        {nickNameValidation && (
+          <p className="text-error text-sm">2~8자의 한글, 영문, 숫자만 사용할 수 있어요.</p>
+        )}
+        {phoneValidation && (
+          <p className="text-error text-sm">숫자만 입력해주세요. (예: 01012345678)</p>
+        )}
       </div>
 
       <div className="flex flex-col gap-2">
