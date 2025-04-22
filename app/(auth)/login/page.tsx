@@ -12,7 +12,6 @@ import { useAuthStore } from '@/app/shared/stores/authStore';
 import { FormStatus } from '@/app/shared/types/FormStatus';
 import { Button } from '@/app/shared/ui/button/Button';
 import Input from '@/app/shared/ui/input/Input';
-import PasswordInput from '@/app/shared/ui/input/PasswordInput';
 import Label from '@/app/shared/ui/label/Label';
 import Image from 'next/image';
 import Link from 'next/link';

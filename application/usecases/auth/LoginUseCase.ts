@@ -1,7 +1,7 @@
-import { generateAccessToken, generateRefreshToken } from '@/infra/user/utils/jwt';
+import { generateAccessToken, generateRefreshToken } from '@/infra/utils/jwt';
 
-import { LoginDto } from '@/application/auth/dto/LoginDto';
-import { UserRepository } from '@/domain/user/repositories/UserRepository';
+import { LoginDto } from '@/application/usecases/auth/dto/LoginDto';
+import { UserRepository } from '@/domain/repositories/UserRepository';
 import bcrypt from 'bcryptjs';
 
 export class LoginUseCase {

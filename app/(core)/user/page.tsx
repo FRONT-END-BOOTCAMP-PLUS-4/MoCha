@@ -1,6 +1,6 @@
 'use client';
 import { useState } from 'react';
-import { Button } from '@/app/shared/ui/button/Button';
+import { Button } from '@/app/shared/ui/button';
 import ChartTab from '@/app/components/user/composite/ChartTab';
 import SettingTab from '@/app/components/user/composite/SettingTab';
 import FullScreenModal from '@/app/components/user/composite/FullScreenModal';
@@ -38,7 +38,7 @@ export default function Mypage() {
       </div>
       <hr className="text-gray-4 my-2" />
       {tabList[selectTab].children}
-      <FullScreenModal/>
+      <FullScreenModal />
     </div>
   );
 }

@@ -1,6 +1,6 @@
 import { supabase } from '@/app/shared/lib/supabase';
-import { User } from '@/domain/user/entities/User';
-import { UserRepository } from '@/domain/user/repositories/UserRepository';
+import { User } from '@/domain/entities/User';
+import { UserRepository } from '@/domain/repositories/UserRepository';
 
 export class SupabaseUserRepository implements UserRepository {
   async findByEmail(email: string): Promise<User | null> {

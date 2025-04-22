@@ -1,7 +1,7 @@
 import { supabase } from '@/app/shared/lib/supabase';
-import { SendCodeDto } from '@/application/auth/dto/SendCodeDto';
-import { sendVerificationCode } from '@/infra/user/utils/email';
-import { createVerificationToken } from '@/infra/user/utils/jwt';
+import { SendCodeDto } from '@/application/usecases/auth/dto/SendCodeDto';
+import { sendVerificationCode } from '@/infra/utils/email';
+import { createVerificationToken } from '@/infra/utils/jwt';
 
 export class SendCodeUseCase {
   async execute({ email }: SendCodeDto): Promise<{ token: string }> {

@@ -1,4 +1,4 @@
-import { VerifyCodeDto } from '@/application/auth/dto/VerifyCodeDto';
+import { VerifyCodeDto } from '@/application/usecases/auth/dto/VerifyCodeDto';
 import jwt from 'jsonwebtoken';
 
 const JWT_SECRET = process.env.JWT_SECRET || 'your-secret-key';

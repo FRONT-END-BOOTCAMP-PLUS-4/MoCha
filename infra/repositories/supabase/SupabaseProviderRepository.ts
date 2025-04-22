@@ -1,5 +1,5 @@
 import { supabase } from '@/app/shared/lib/supabase';
-import { ProviderRepository } from '@/domain/user/repositories/ProviderRepository';
+import { ProviderRepository } from '@/domain/repositories/ProviderRepository';
 
 export class SupabaseProviderRepository implements ProviderRepository {
   async getIdByName(providerName: string): Promise<number> {

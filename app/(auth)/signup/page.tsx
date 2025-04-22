@@ -15,10 +15,10 @@ import Title from '@/app/components/auth/Title';
 import { getFieldMessage } from '@/app/shared/consts/errorMessages';
 import useIsHide from '@/app/shared/hooks/useIsHide';
 import { FormStatus } from '@/app/shared/types/FormStatus';
-import { Button } from '@/app/shared/ui/button/Button';
-import Input from '@/app/shared/ui/input/Input';
+import { Button } from '@/app/shared/ui/button';
+import Input from '@/app/shared/ui/input';
 import PasswordInput from '@/app/shared/ui/input/PasswordInput';
-import Label from '@/app/shared/ui/label/Label';
+import Label from '@/app/shared/ui/label';
 import { useRouter } from 'next/navigation';
 
 export default function SignupPage() {
