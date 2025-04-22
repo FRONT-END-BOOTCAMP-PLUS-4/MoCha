@@ -1,17 +1,16 @@
 'use client';
 
 import { Transaction } from '@/app/shared/types/Calendar';
-import { ShoppingBag } from 'lucide-react';
+import CategoryIcon from './CategoryIcon';
+import { categoryKoMap } from '@/app/shared/consts/categoryKoMap';
 
 export default function TransactionItem({ item }: { item: Transaction }) {
   return (
     <li className="flex items-center justify-between px-6 py-4">
       <div className="flex items-center gap-4">
-        <span className="flex size-8 items-center justify-center rounded-full bg-amber-500">
-          <ShoppingBag color="#f44336" /> {/*임시 아이콘*/}
-        </span>
+        <CategoryIcon category={item.category} />
         <div>
-          <p className="font-bold">{item.category}</p>
+          <p className="font-bold">{categoryKoMap[item.category]}</p>
           {item.memo && <p className="text-sm text-gray-500">{item.memo}</p>}
         </div>
       </div>

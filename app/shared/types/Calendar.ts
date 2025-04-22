@@ -1,8 +1,24 @@
 import { ReactNode } from 'react';
 
+export type Category =
+  | 'salary'
+  | 'investment'
+  | 'allowance'
+  | 'refund'
+  | 'food'
+  | 'housing'
+  | 'transportation'
+  | 'communication'
+  | 'medical'
+  | 'shopping'
+  | 'education'
+  | 'culture'
+  | 'event'
+  | 'other';
+
 export type Transaction = {
   id: string;
-  category: string;
+  category: Category;
   memo?: string;
   amount: number;
   type: 'income' | 'expense';
