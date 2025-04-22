@@ -9,7 +9,7 @@ import Title from '@/app/components/auth/Title';
 import { getFieldMessage } from '@/app/shared/consts/errorMessages';
 import { useAuthStore } from '@/app/shared/stores/authStore';
 import { FormStatus } from '@/app/shared/types/FormStatus';
-import { Button } from '@/app/shared/ui/button/Button';
+import { Button } from '@/app/shared/ui/button';
 import Input from '@/app/shared/ui/input/Input';
 import Label from '@/app/shared/ui/label/Label';
 import Image from 'next/image';

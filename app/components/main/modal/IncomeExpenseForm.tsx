@@ -1,7 +1,7 @@
 'use client';
 
 import { IncomeExpenseFormProps } from '@/app/shared/types/Calendar';
-import { Button } from '@/app/shared/ui/button/Button';
+import { Button } from '@/app/shared/ui/button';
 import Input from '@/app/shared/ui/input/Input';
 import { useState } from 'react';
 
