@@ -3,7 +3,7 @@
 import { ChangeEvent, useRef, useState, type ReactElement } from 'react';
 import { Eye } from 'lucide-react';
 import { Button } from '@/app/shared/ui/button/Button';
-import { isValidPassword } from '@/app/shared/utils/validation';
+import { isValidPassword } from '@/app/shared/consts/validation';
 import { cn } from '@/app/shared/utils/cn';
 
 type PasswordCheckProps = {

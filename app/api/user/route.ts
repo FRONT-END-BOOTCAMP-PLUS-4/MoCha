@@ -1,10 +1,10 @@
-import { verifyAccessToken, verifyEmailToken } from '@/infra/user/utils/jwt';
+import { verifyAccessToken, verifyEmailToken } from '@/infra/utils/jwt';
 import { NextRequest, NextResponse } from 'next/server';
 
 import { supabase } from '@/app/shared/lib/supabase';
-import { GetUserUseCase } from '@/application/user/usecase/GetUserUseCase';
-import { SignupUseCase } from '@/application/user/usecase/SignupUsecase';
-import { SupabaseUserRepository } from '@/infra/user/repositories/SupabaseUserRepository';
+import { GetUserUseCase } from '@/application/usecases/user/GetUserUseCase';
+import { SignupUseCase } from '@/application/usecases/user/SignupUsecase';
+import { SupabaseUserRepository } from '@/infra/repositories/supabase/SupabaseUserRepository';
 
 export async function GET(req: NextRequest) {
   try {

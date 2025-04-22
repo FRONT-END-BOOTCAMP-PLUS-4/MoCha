@@ -1,5 +1,5 @@
-import { FindEmailDto } from '@/application/auth/dto/FindEmailDto';
-import { UserRepository } from '@/domain/user/repositories/UserRepository';
+import { FindEmailDto } from '@/application/usecases/auth/dto/FindEmailDto';
+import { UserRepository } from '@/domain/repositories/UserRepository';
 
 export class FindEmailUseCase {
   constructor(private readonly userRepo: UserRepository) {}

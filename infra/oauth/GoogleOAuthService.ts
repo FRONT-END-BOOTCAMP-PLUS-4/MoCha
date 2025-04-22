@@ -1,4 +1,4 @@
-import { OAuthService } from '@/domain/user/services/OAuthService';
+import { OAuthService } from '@/domain/services/OAuthService';
 
 export class GoogleOAuthService implements OAuthService {
   async getUserProfile(code: string) {

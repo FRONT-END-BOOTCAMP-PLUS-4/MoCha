@@ -1,9 +1,9 @@
-import { generateAccessToken, generateRefreshToken } from '@/infra/user/utils/jwt';
+import { generateAccessToken, generateRefreshToken } from '@/infra/utils/jwt';
 
-import { ProviderRepository } from '@/domain/user/repositories/ProviderRepository';
-import { UserRepository } from '@/domain/user/repositories/UserRepository';
-import { OAuthService } from '@/domain/user/services/OAuthService';
-import { SocialLoginDto } from '../dto/SocialLoginDto';
+import { ProviderRepository } from '@/domain/repositories/ProviderRepository';
+import { UserRepository } from '@/domain/repositories/UserRepository';
+import { OAuthService } from '@/domain/services/OAuthService';
+import { SocialLoginDto } from './dto/SocialLoginDto';
 
 export class SocialLoginUseCase {
   constructor(
