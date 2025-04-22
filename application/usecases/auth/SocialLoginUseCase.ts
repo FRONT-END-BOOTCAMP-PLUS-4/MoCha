@@ -1,4 +1,4 @@
-import { generateAccessToken, generateRefreshToken } from '@/infra/user/utils/jwt';
+import { generateAccessToken, generateRefreshToken } from '@/infra/utils/jwt';
 
 import { ProviderRepository } from '@/domain/repositories/ProviderRepository';
 import { UserRepository } from '@/domain/repositories/UserRepository';

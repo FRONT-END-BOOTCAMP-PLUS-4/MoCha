@@ -1,6 +1,6 @@
 import { ResetPasswordDto } from '@/application/usecases/auth/dto/ResetPasswordDto';
 import { UserRepository } from '@/domain/repositories/UserRepository';
-import { verifyEmailToken } from '@/infra/user/utils/jwt';
+import { verifyEmailToken } from '@/infra/utils/jwt';
 import bcrypt from 'bcryptjs';
 
 export class ResetPasswordUseCase {

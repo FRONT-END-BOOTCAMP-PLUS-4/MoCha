@@ -1,4 +1,4 @@
-import { generateAccessToken, generateRefreshToken } from '@/infra/user/utils/jwt';
+import { generateAccessToken, generateRefreshToken } from '@/infra/utils/jwt';
 
 import { LoginDto } from '@/application/usecases/auth/dto/LoginDto';
 import { UserRepository } from '@/domain/repositories/UserRepository';
