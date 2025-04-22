@@ -1,4 +1,4 @@
-import { OAuthService } from '@/domain/user/services/OAuthService';
+import { OAuthService } from '@/domain/services/OAuthService';
 import { GoogleOAuthService } from './GoogleOAuthService';
 import { KakaoOAuthService } from './KakaoOAuthService';
 

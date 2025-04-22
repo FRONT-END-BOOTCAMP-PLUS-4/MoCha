@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 
-import { CheckNicknameUseCase } from '@/application/auth/usecase/CheckNicknameUseCase';
-import { SupabaseUserRepository } from '@/infra/user/repositories/SupabaseUserRepository';
+import { CheckNicknameUseCase } from '@/application/usecases/auth/CheckNicknameUseCase';
+import { SupabaseUserRepository } from '@/infra/repositories/supabase/SupabaseUserRepository';
 
 export async function POST(req: NextRequest) {
   try {

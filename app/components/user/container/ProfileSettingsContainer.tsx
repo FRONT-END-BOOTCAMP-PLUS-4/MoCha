@@ -1,5 +1,5 @@
 import { useState, useRef, type ChangeEvent } from 'react';
-import { isValidNickname, isValidPhoneNumber } from '@/app/shared/utils/validation';
+import { isValidNickname, isValidPhoneNumber } from '@/app/shared/consts/validation';
 import ProfileSettings from '@/app/components/user/presentation/ProfileSettings';
 
 export default function ProfileSettingsContainer() {

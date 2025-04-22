@@ -1,8 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 
 import { supabase } from '@/app/shared/lib/supabase';
-import { sendVerificationCode } from '@/infra/user/utils/email';
-import { createVerificationToken } from '@/infra/user/utils/jwt';
+import { sendVerificationCode } from '@/infra/utils/email';
+import { createVerificationToken } from '@/infra/utils/jwt';
 
 export async function POST(req: NextRequest) {
   try {

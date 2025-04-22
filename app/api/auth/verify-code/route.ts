@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 
-import { VerifyCodeUseCase } from '@/application/auth/usecase/VerifyCodeUseCase';
+import { VerifyCodeUseCase } from '@/application/usecases/auth/VerifyCodeUseCase';
 
 export async function POST(req: NextRequest) {
   try {

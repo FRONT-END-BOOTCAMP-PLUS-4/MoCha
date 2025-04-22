@@ -1,7 +1,7 @@
 import { useState, useRef, type ChangeEvent } from 'react';
 import { Eye } from 'lucide-react';
-import { isValidPassword } from '@/app/shared/utils/validation';
-import { Button } from '@/app/shared/ui/button';
+import { isValidPassword } from '@/app/shared/consts/validation';
+import { Button } from '@/app/shared/ui/button/index';
 import { cn } from '@/app/shared/utils/cn';
 
 type PasswordChangeProps = {
