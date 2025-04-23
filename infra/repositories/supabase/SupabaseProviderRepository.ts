@@ -2,7 +2,7 @@ import { supabase } from '@/app/shared/lib/supabase';
 import { ProviderRepository } from '@/domain/repositories/ProviderRepository';
 
 export class SupabaseProviderRepository implements ProviderRepository {
-  async getIdByName(providerName: string): Promise<string> {
+  async getIdByName(providerName: string): Promise<number> {
     const { data, error } = await supabase
       .from('provider')
       .select('id')

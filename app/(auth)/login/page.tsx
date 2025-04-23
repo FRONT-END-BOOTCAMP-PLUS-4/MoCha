@@ -7,10 +7,12 @@ import LogoImage from '@/app/components/auth/LogoImage';
 import MessageZone from '@/app/components/auth/MessageZone';
 import Title from '@/app/components/auth/Title';
 import { getFieldMessage } from '@/app/shared/consts/errorMessages';
+import useIsHide from '@/app/shared/hooks/useIsHide';
 import { useAuthStore } from '@/app/shared/stores/authStore';
 import { FormStatus } from '@/app/shared/types/FormStatus';
 import { Button } from '@/app/shared/ui/button';
 import Input from '@/app/shared/ui/input';
+import PasswordInput from '@/app/shared/ui/input/PasswordInput';
 import Label from '@/app/shared/ui/label';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -18,8 +20,13 @@ import { useRouter } from 'next/navigation';
 
 export default function LoginPage() {
   const router = useRouter();
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const { isHide, onToggle } = useIsHide();
+
+  // form 상태로 통합
+  const [form, setForm] = useState({
+    email: '',
+    password: '',
+  });
 
   const [status, setStatus] = useState<FormStatus>({
     email: 'none',
@@ -27,31 +34,34 @@ export default function LoginPage() {
     login: 'none',
   });
 
-  const isFormValid = isValidEmail(email) && password.trim().length > 0;
+  const isFormValid = isValidEmail(form.email) && form.password.trim().length > 0;
 
-  const handleEmailChange = (e: ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value;
-    setEmail(value);
-    setStatus((prev) => ({
-      ...prev,
-      email: isValidEmail(value) ? 'valid' : 'invalid',
-      login: 'none',
-    }));
-  };
+  // 공통 핸들러
+  const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
+    const { id, value } = e.target;
+    setForm((prev) => ({ ...prev, [id]: value }));
 
-  const handlePasswordChange = (e: ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value;
-    setPassword(value);
-    setStatus((prev) => ({
-      ...prev,
-      password: isValidPassword(value) ? 'valid' : 'invalid',
-      login: 'none',
-    }));
+    switch (id) {
+      case 'email':
+        setStatus((prev) => ({
+          ...prev,
+          email: isValidEmail(value) ? 'valid' : 'invalid',
+          login: 'none',
+        }));
+        break;
+      case 'password':
+        setStatus((prev) => ({
+          ...prev,
+          password: isValidPassword(value) ? 'valid' : 'invalid',
+          login: 'none',
+        }));
+        break;
+    }
   };
 
   const handleLogin = async () => {
-    const emailValid = isValidEmail(email);
-    const passwordValid = isValidPassword(password);
+    const emailValid = isValidEmail(form.email);
+    const passwordValid = isValidPassword(form.password);
 
     if (!emailValid || !passwordValid) {
       setStatus((prev) => ({
@@ -66,7 +76,7 @@ export default function LoginPage() {
       const res = await fetch('/api/auth/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password }),
+        body: JSON.stringify({ email: form.email, password: form.password }),
       });
 
       const data = await res.json();
@@ -112,11 +122,12 @@ export default function LoginPage() {
           <Label label="이메일" htmlFor="email" />
           <Input
             id="email"
-            value={email}
-            onChange={handleEmailChange}
+            value={form.email}
+            onChange={handleInputChange}
             placeholder="이메일을 입력해주세요."
             className="w-full"
             error={['invalid', 'error'].includes(status.email ?? '')}
+            autoComplete="email"
           />
           <MessageZone
             errorMessages={
@@ -130,14 +141,15 @@ export default function LoginPage() {
         {/* 비밀번호 */}
         <div>
           <Label label="비밀번호" htmlFor="password" />
-          <Input
+          <PasswordInput
             id="password"
-            type="password"
-            value={password}
-            onChange={handlePasswordChange}
             placeholder="비밀번호를 입력해주세요."
-            className="w-full"
-            error={['invalid', 'error'].includes(status.password ?? '') || status.login === 'error'}
+            value={form.password}
+            onInputChange={handleInputChange}
+            error={status.password}
+            isHide={isHide}
+            onToggle={onToggle}
+            autoComplete="current-password"
           />
           <MessageZone
             errorMessages={[
@@ -187,7 +199,7 @@ export default function LoginPage() {
               src="/images/social/google-logo.svg"
               alt="구글 로그인 아이콘"
               width={20}
-              height={20}
+              height={24}
             />
             <div>구글로 로그인하기</div>
           </button>
@@ -199,7 +211,7 @@ export default function LoginPage() {
               src="/images/social/kakao-logo.svg"
               alt="카카오 로그인 아이콘"
               width={20}
-              height={20}
+              height={24}
             />
             <div>카카오톡으로 로그인하기</div>
           </button>

@@ -1,7 +1,7 @@
 'use client';
 
 import { isValidNickname, isValidPhoneNumber } from '@/app/shared/consts/validation';
-import { useEffect, useState } from 'react';
+import { ChangeEvent, useEffect, useState } from 'react';
 
 import LogoImage from '@/app/components/auth/LogoImage';
 import MessageZone from '@/app/components/auth/MessageZone';
@@ -35,7 +35,7 @@ export default function SocialInfoPage() {
     });
   }, [authUser]);
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
     const { id, value } = e.target;
     setUser((prev) => ({ ...prev, [id]: value }));
 
