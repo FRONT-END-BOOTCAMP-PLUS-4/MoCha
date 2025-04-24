@@ -1,10 +1,10 @@
-import { VerifyCodeDto } from '@/application/usecases/auth/dto/VerifyCodeDto';
+import { VerifyCodeRequestDto } from '@/application/usecases/auth/dto/VerifyCodeDto';
 import jwt from 'jsonwebtoken';
 
 const JWT_SECRET = process.env.JWT_SECRET || 'your-secret-key';
 
 export class VerifyCodeUseCase {
-  async execute(dto: VerifyCodeDto): Promise<{ verified: boolean }> {
+  async execute(dto: VerifyCodeRequestDto): Promise<{ verified: boolean }> {
     const { token, code } = dto;
 
     try {

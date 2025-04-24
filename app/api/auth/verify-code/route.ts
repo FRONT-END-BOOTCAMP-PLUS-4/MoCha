@@ -14,9 +14,9 @@ export async function POST(req: NextRequest) {
     }
 
     const usecase = new VerifyCodeUseCase();
-    const result = await usecase.execute({ token, code });
+    const verified = await usecase.execute({ token, code });
 
-    return NextResponse.json({ success: true, ...result }, { status: 200 });
+    return NextResponse.json({ success: true, verified }, { status: 200 });
   } catch (err: any) {
     return NextResponse.json(
       { success: false, error: err.message || '서버 오류' },
