@@ -4,7 +4,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { supabase } from '@/app/shared/lib/supabase';
 import { GetUserUseCase } from '@/application/usecases/user/GetUserUseCase';
 import { SignupUseCase } from '@/application/usecases/user/SignupUsecase';
-import { SupabaseUserRepository } from '@/infra/repositories/supabase/SupabaseUserRepository';
+import { SbUserRepo } from '@/infra/repositories/supabase/SbUserRepo';
 
 export async function GET(req: NextRequest) {
   try {
@@ -12,12 +12,10 @@ export async function GET(req: NextRequest) {
     if (!token) {
       return NextResponse.json({ success: false, error: '토큰 없음' }, { status: 401 });
     }
-
-    const { id } = verifyAccessToken(token);
-    const userRepo = new SupabaseUserRepository();
+    const { email } = verifyAccessToken(token);
+    const userRepo = new SbUserRepo();
     const getUserUsecase = new GetUserUseCase(userRepo);
-    const user = await getUserUsecase.execute(id);
-
+    const user = await getUserUsecase.execute(email);
     return NextResponse.json({ success: true, user }, { status: 200 });
   } catch (err: any) {
     console.error('유저 조회 실패:', err.message);
@@ -54,7 +52,7 @@ export async function POST(req: NextRequest) {
     }
 
     // 회원가입 유스케이스 실행
-    const userRepo = new SupabaseUserRepository();
+    const userRepo = new SbUserRepo();
     const signupUsecase = new SignupUseCase(userRepo);
     const user = await signupUsecase.execute({
       email,
