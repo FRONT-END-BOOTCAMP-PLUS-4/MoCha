@@ -1,10 +1,9 @@
 import { supabase } from '@/app/shared/lib/supabase';
-import { SendCodeDto } from '@/application/usecases/auth/dto/SendCodeDto';
 import { sendVerificationCode } from '@/infra/utils/email';
 import { createVerificationToken } from '@/infra/utils/jwt';
 
 export class SendCodeUseCase {
-  async execute({ email }: SendCodeDto): Promise<{ token: string }> {
+  async execute(email: string): Promise<{ token: string }> {
     // 이메일 중복 확인
     const { data: existingUser } = await supabase
       .from('user')
