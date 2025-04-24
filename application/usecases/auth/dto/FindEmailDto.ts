@@ -1,4 +1,6 @@
-export interface FindEmailDto {
-  nickname: string;
-  phoneNumber: string;
+export class FindEmailRequestDto {
+  constructor(
+    public nickname: string,
+    public phoneNumber: string
+  ) {}
 }

@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 
 import { FindEmailUseCase } from '@/application/usecases/auth/FindEmailUseCase';
-import { SupabaseUserRepository } from '@/infra/repositories/supabase/SupabaseUserRepository';
+import { SbUserRepo } from '@/infra/repositories/supabase/SbUserRepo';
 
 export async function POST(req: NextRequest) {
   try {
@@ -14,8 +14,9 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const usecase = new FindEmailUseCase(new SupabaseUserRepository());
-    const { email } = await usecase.execute({ nickname, phoneNumber });
+    const userRepo = new SbUserRepo();
+    const usecase = new FindEmailUseCase(userRepo);
+    const { email }: { email: string } = await usecase.execute({ nickname, phoneNumber });
 
     return NextResponse.json({ success: true, email }, { status: 200 });
   } catch (err: any) {
