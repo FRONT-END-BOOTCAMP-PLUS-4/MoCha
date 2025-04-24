@@ -6,6 +6,7 @@ export const getFieldMessage = (field: string, status: FieldStatus): string => {
       invalid: '유효한 이메일 주소를 입력해주세요.',
       duplicated: '이미 존재하는 계정입니다.',
       success: '인증번호가 이메일로 전송되었습니다.',
+      notFound: '존재하지 않는 계정입니다.',
       error: '이메일 인증 중 오류가 발생했습니다.',
     },
     nickname: {
