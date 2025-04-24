@@ -9,10 +9,13 @@ import { SbUserRepo } from '@/infra/repositories/supabase/SbUserRepo';
 export async function GET(req: NextRequest) {
   try {
     const token = req.headers.get('authorization')?.replace('Bearer ', '');
+
     if (!token) {
       return NextResponse.json({ success: false, error: '토큰 없음' }, { status: 401 });
     }
-    const { email } = verifyAccessToken(token);
+    const payload = verifyAccessToken(token);
+
+    const { email } = payload;
     const userRepo = new SbUserRepo();
     const getUserUsecase = new GetUserUseCase(userRepo);
     const user = await getUserUsecase.execute(email);
