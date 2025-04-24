@@ -22,7 +22,7 @@ export default function RootLayout({
     })
       .then((res) => res.json())
       .then((data) => {
-        console.log('data: ', data);
+        // console.log('data: ', data);
         if (data.success) {
           const { setUser, setAccessToken } = useAuthStore.getState();
           setAccessToken(token); // zustand에도 다시 저장

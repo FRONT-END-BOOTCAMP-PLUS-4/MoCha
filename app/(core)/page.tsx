@@ -1,12 +1,13 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import FloatingButton from '../components/main/FloatingButton';
 import FullCalendarWrapper from '../components/main/FullCalendarWrapper';
 import Modal from '../components/main/modal/TransactionModal';
 import SummaryHeader from '../components/main/SummaryHeader';
 import IncomeExpenseForm from '../components/main/modal/IncomeExpenseForm';
 import { DailyData } from '../shared/types/Calendar';
+import { json } from 'stream/consumers';
 
 const mockData: { summary: { totalIncome: number; totalExpense: number }; daily: DailyData[] } = {
   summary: {
@@ -116,8 +117,28 @@ const mockData: { summary: { totalIncome: number; totalExpense: number }; daily:
   ],
 };
 
+
 export default function Home() {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  
+  const date = new Date();
+  const dateYears = date.getFullYear();
+  const dateMonths = date.getMonth() + 1;
+
+  const [years, setYears] = useState(dateYears);
+  const [months, setMonths] = useState(dateMonths);
+  // console.log("years:",years)
+  // console.log("months:",months)
+  // 토큰 임시저장 ___ Temp
+  useEffect(() => {
+      fetch(`/api?start=2025-04&end=2025-05`,{
+        headers: { Authorization: `Bearer ${localStorage.getItem('access_token')}` },
+      })
+      .then((res) => res.json())
+      .then((data) => console.log("Homedata:",data));
+  }, []);
+
+  
 
   return (
     <div className="">
