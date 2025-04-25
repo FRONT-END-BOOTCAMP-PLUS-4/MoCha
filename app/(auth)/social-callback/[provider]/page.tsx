@@ -1,8 +1,9 @@
 'use client';
 
-import { useParams, useRouter, useSearchParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
+import { useParams, useRouter, useSearchParams } from 'next/navigation';
 
+import { decodeJwt } from 'jose';
 import { useAuthStore } from '@/app/shared/stores/authStore';
 
 export default function SocialCallbackPage() {
@@ -35,12 +36,20 @@ export default function SocialCallbackPage() {
           return;
         }
 
-        const { access_token, refresh_token, user, isNew } = data;
+        const { token, isNew } = data;
 
-        localStorage.setItem('access_token', access_token);
-        localStorage.setItem('refresh_token', refresh_token);
-        setAccessToken(access_token);
-        setUser(user);
+        const decodedToken = decodeJwt(token) as {
+          user: {
+            email: string;
+            nickname: string;
+            phone_number: string;
+            provider: string;
+          };
+        };
+
+        localStorage.setItem('access_token', token);
+        setAccessToken(token);
+        setUser(decodedToken.user);
 
         router.push(isNew ? '/social-info' : '/');
       } catch (err) {

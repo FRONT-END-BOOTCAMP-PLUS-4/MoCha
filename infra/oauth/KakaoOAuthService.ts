@@ -26,7 +26,7 @@ export class KakaoOAuthService implements OAuthService {
 
     return {
       email: profileData.kakao_account?.email,
-      nickname: profileData.kakao_account?.profile?.nickname ?? null,
+      nickname: null,
     };
   }
 }

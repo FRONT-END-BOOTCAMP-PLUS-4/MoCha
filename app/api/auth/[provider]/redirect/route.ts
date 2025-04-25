@@ -10,7 +10,7 @@ export async function GET(_req: NextRequest, { params }: { params: { provider: s
     const redirect_uri = process.env.GOOGLE_REDIRECT_URI!;
     const scope = 'openid email profile';
 
-    url = `https://accounts.google.com/o/oauth2/v2/auth?response_type=code&client_id=${client_id}&redirect_uri=${redirect_uri}&scope=${scope}&access_type=offline`;
+    url = `https://accounts.google.com/o/oauth2/v2/auth?response_type=code&client_id=${client_id}&redirect_uri=${redirect_uri}&scope=${scope}`;
   } else if (provider === 'kakao') {
     const client_id = process.env.KAKAO_CLIENT_ID!;
     const redirect_uri = process.env.KAKAO_REDIRECT_URI!;
