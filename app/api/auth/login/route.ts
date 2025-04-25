@@ -18,7 +18,7 @@ export async function POST(req: NextRequest) {
     // 로그인 UseCase 실행
     const userRepo = new SbUserRepo();
     const loginUsecase = new LoginUseCase(userRepo);
-    const { token }: { token: string } = await loginUsecase.execute({ email, password });
+    const { token } = await loginUsecase.execute({ email, password });
 
     // 응답  저장
     const res = NextResponse.json({
@@ -29,11 +29,15 @@ export async function POST(req: NextRequest) {
     });
 
     return res;
-  } catch (err: any) {
-    console.error('로그인 에러:', err.message);
-    const isAuthError = err.message.includes('비밀번호') || err.message.includes('존재하지');
+  } catch (error: unknown) {
+    const message = error instanceof Error ? error.message : '알 수 없는 오류가 발생했습니다.';
+
+    console.error('로그인 에러:', message);
+
+    const isAuthError = message.includes('비밀번호') || message.includes('존재하지');
+
     return NextResponse.json(
-      { success: false, error: err.message },
+      { success: false, error: message },
       { status: isAuthError ? 401 : 500 }
     );
   }
