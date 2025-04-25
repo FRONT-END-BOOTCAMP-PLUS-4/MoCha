@@ -1,10 +1,10 @@
-import { verifyAccessToken, verifyEmailToken } from '@/infra/utils/jwt';
 import { NextRequest, NextResponse } from 'next/server';
+import { verifyAccessToken, verifyEmailToken } from '@/infra/utils/jwt';
 
-import { supabase } from '@/app/shared/lib/supabase';
 import { GetUserUseCase } from '@/application/usecases/user/GetUserUseCase';
-import { SignupUseCase } from '@/application/usecases/user/SignupUsecase';
 import { SbUserRepo } from '@/infra/repositories/supabase/SbUserRepo';
+import { SignupUseCase } from '@/application/usecases/user/SignupUsecase';
+import { supabase } from '@/app/shared/lib/supabase';
 
 export async function GET(req: NextRequest) {
   try {
@@ -15,15 +15,19 @@ export async function GET(req: NextRequest) {
     }
     const payload = verifyAccessToken(token);
 
-    const { email } = payload;
+    const { email } = payload.user;
     const userRepo = new SbUserRepo();
     const getUserUsecase = new GetUserUseCase(userRepo);
     const user = await getUserUsecase.execute(email);
     return NextResponse.json({ success: true, user }, { status: 200 });
-  } catch (err: any) {
-    console.error('유저 조회 실패:', err.message);
+  } catch (error: unknown) {
+    // 메시지 추출
+    const message = error instanceof Error ? error.message : String(error);
+    console.error('유저 조회 실패:', message);
+
+    // 401, 기본 메시지 유지
     return NextResponse.json(
-      { success: false, error: err.message || '유저 정보 확인 실패' },
+      { success: false, error: message || '유저 정보 확인 실패' },
       { status: 401 }
     );
   }
@@ -66,10 +70,13 @@ export async function POST(req: NextRequest) {
     });
 
     return NextResponse.json({ success: true, user }, { status: 201 });
-  } catch (err: any) {
-    console.error('회원가입 실패:', err.message);
+  } catch (error: unknown) {
+    const message = error instanceof Error ? error.message : String(error);
+    console.error('회원가입 실패:', message);
+
+    // 400, 기본 메시지 유지
     return NextResponse.json(
-      { success: false, error: err.message || '회원가입 중 오류 발생' },
+      { success: false, error: message || '회원가입 중 오류 발생' },
       { status: 400 }
     );
   }
@@ -85,20 +92,26 @@ export async function PUT(req: NextRequest) {
     }
 
     const payload = verifyAccessToken(token);
-    const { id } = payload;
+    const { email } = payload.user;
 
     const body = await req.json();
     const { nickname, phone_number } = body;
 
-    const { error } = await supabase.from('user').update({ nickname, phone_number }).eq('id', id);
+    const { error } = await supabase
+      .from('user')
+      .update({ nickname, phone_number })
+      .eq('email', email);
 
     if (error) {
       return NextResponse.json({ success: false, error: '업데이트 실패' }, { status: 500 });
     }
 
     return NextResponse.json({ success: true });
-  } catch (e) {
-    console.error('PUT /api/user 오류:', e);
-    return NextResponse.json({ success: false, error: '서버 오류' }, { status: 500 });
+  } catch (error: unknown) {
+    const message = error instanceof Error ? error.message : String(error);
+    console.error('PUT /api/user 오류:', message);
+
+    // 500, 메시지도 클라이언트에 전달
+    return NextResponse.json({ success: false, error: message }, { status: 500 });
   }
 }

@@ -16,15 +16,13 @@ export async function POST(req: NextRequest) {
 
     const userRepo = new SbUserRepo();
     const usecase = new FindEmailUseCase(userRepo);
-    const { email }: { email: string } = await usecase.execute({ nickname, phoneNumber });
+    const { email } = await usecase.execute({ nickname, phoneNumber });
 
     return NextResponse.json({ success: true, email }, { status: 200 });
-  } catch (err: any) {
-    console.error('아이디 찾기 에러:', err.message);
-    const status = err.message.includes('일치') ? 404 : 500;
-    return NextResponse.json(
-      { success: false, error: err.message || '서버 오류가 발생했습니다.' },
-      { status }
-    );
+  } catch (error: unknown) {
+    const message = error instanceof Error ? error.message : '알 수 없는 오류가 발생했습니다.';
+
+    const status = message.includes('일치') ? 404 : 500;
+    return NextResponse.json({ success: false, error: message }, { status });
   }
 }

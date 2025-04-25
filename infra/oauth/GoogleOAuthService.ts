@@ -14,6 +14,7 @@ export class GoogleOAuthService implements OAuthService {
       }),
     });
     const tokenData = await tokenRes.json();
+    console.log('tokenData: ', tokenData);
     const accessToken = tokenData.access_token;
 
     const profileRes = await fetch('https://www.googleapis.com/oauth2/v2/userinfo', {

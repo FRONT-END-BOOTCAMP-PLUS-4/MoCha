@@ -1,22 +1,22 @@
 'use client';
 
-import { isValidEmail, isValidPassword } from '@/app/shared/consts/validation';
 import { ChangeEvent, FormEvent, useState } from 'react';
+import { isValidEmail, isValidPassword } from '@/app/shared/consts/validation';
 
+import { Button } from '@/app/shared/ui/button';
+import { FormStatus } from '@/app/shared/types/FormStatus';
+import Image from 'next/image';
+import Input from '@/app/shared/ui/input';
+import Label from '@/app/shared/ui/label';
+import Link from 'next/link';
 import LogoImage from '@/app/components/auth/LogoImage';
 import MessageZone from '@/app/components/auth/MessageZone';
-import Title from '@/app/components/auth/Title';
-import { getFieldMessage } from '@/app/shared/consts/errorMessages';
-import useIsHide from '@/app/shared/hooks/useIsHide';
-import { useAuthStore } from '@/app/shared/stores/authStore';
-import { FormStatus } from '@/app/shared/types/FormStatus';
-import { Button } from '@/app/shared/ui/button';
-import Input from '@/app/shared/ui/input';
 import PasswordInput from '@/app/shared/ui/input/PasswordInput';
-import Label from '@/app/shared/ui/label';
+import Title from '@/app/components/auth/Title';
 import { decodeJwt } from 'jose';
-import Image from 'next/image';
-import Link from 'next/link';
+import { getFieldMessage } from '@/app/shared/consts/errorMessages';
+import { useAuthStore } from '@/app/shared/stores/authStore';
+import useIsHide from '@/app/shared/hooks/useIsHide';
 import { useRouter } from 'next/navigation';
 
 export default function LoginPage() {
@@ -91,7 +91,6 @@ export default function LoginPage() {
       const { token } = data;
       const decodedToken = decodeJwt(token) as {
         user: {
-          id: string;
           email: string;
           nickname: string;
           phone_number: string;

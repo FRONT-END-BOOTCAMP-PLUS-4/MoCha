@@ -1,6 +1,6 @@
-export class SocialLoginDto {
+export class SocialLoginRequestDto {
   constructor(
-    public readonly provider: 'google' | 'kakao',
-    public readonly code: string
+    public provider: 'google' | 'kakao',
+    public code: string
   ) {}
 }

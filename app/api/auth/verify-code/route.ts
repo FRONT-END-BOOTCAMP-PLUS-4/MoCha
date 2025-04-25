@@ -17,10 +17,12 @@ export async function POST(req: NextRequest) {
     const verified = await usecase.execute({ token, code });
 
     return NextResponse.json({ success: true, verified }, { status: 200 });
-  } catch (err: any) {
-    return NextResponse.json(
-      { success: false, error: err.message || '서버 오류' },
-      { status: 401 }
-    );
+  } catch (error: unknown) {
+    // 에러 메시지를 안전하게 추출
+    const message = error instanceof Error ? error.message : String(error);
+
+    console.error('로그인 에러:', message);
+
+    return NextResponse.json({ success: false, error: message }, { status: 401 });
   }
 }
