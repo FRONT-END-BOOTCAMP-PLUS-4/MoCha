@@ -1,4 +1,6 @@
-export interface VerifyCodeDto {
-  token: string;
-  code: string;
+export class VerifyCodeRequestDto {
+  constructor(
+    public token: string,
+    public code: string
+  ) {}
 }

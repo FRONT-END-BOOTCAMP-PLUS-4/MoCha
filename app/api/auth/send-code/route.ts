@@ -11,7 +11,7 @@ export async function POST(req: NextRequest) {
     }
 
     const usecase = new SendCodeUseCase();
-    const { token } = await usecase.execute({ email });
+    const { token } = await usecase.execute(email);
 
     return NextResponse.json({ success: true, token }, { status: 200 });
   } catch (err: any) {

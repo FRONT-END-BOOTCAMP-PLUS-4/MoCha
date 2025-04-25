@@ -19,6 +19,7 @@
     "clsx": "^2.1.1",
     "date-fns": "^4.1.0",
     "dayjs": "^1.11.13",
+    "jose": "^6.0.10",
     "js-cookie": "^3.0.5",
     "jsonwebtoken": "^9.0.2",
     "lucide-react": "^0.487.0",
