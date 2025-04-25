@@ -1,17 +1,16 @@
-// /api/auth/[provider]/exchange/route.ts
-
 import { NextRequest, NextResponse } from 'next/server';
 
-import { SocialLoginDto } from '@/application/usecases/auth/dto/SocialLoginDto';
-import { SocialLoginUseCase } from '@/application/usecases/auth/SocialLoginUseCase';
 import { OAuthServiceFactory } from '@/infra/oauth/OAuthServiceFactory';
-import { SupabaseProviderRepository } from '@/infra/repositories/supabase/SupabaseProviderRepository';
-import { SupabaseUserRepository } from '@/infra/repositories/supabase/SupabaseUserRepository';
+import { SbUserRepo } from '@/infra/repositories/supabase/SbUserRepo';
+import { SocialLoginUseCase } from '@/application/usecases/auth/SocialLoginUseCase';
 
-export async function POST(req: NextRequest, { params }: { params: { provider: string } }) {
+export async function POST(
+  req: NextRequest,
+  { params }: { params: Promise<{ provider: string }> }
+) {
   try {
     const { code } = await req.json();
-    const provider = params.provider;
+    const provider = (await params).provider as 'google' | 'kakao';
 
     if (!code || !provider) {
       return NextResponse.json(
@@ -20,22 +19,20 @@ export async function POST(req: NextRequest, { params }: { params: { provider: s
       );
     }
 
-    // 의존성 생성
-    const userRepo = new SupabaseUserRepository();
-    const providerRepo = new SupabaseProviderRepository();
+    // 의존성 주입
+    const userRepo = new SbUserRepo();
     const oauthService = OAuthServiceFactory.create(provider);
 
-    // UseCase 실행
-    const dto = new SocialLoginDto(provider as 'google' | 'kakao', code);
-    const usecase = new SocialLoginUseCase(userRepo, providerRepo, oauthService);
-    const result = await usecase.execute(dto);
+    // UseCase 호출
+    const usecase = new SocialLoginUseCase(userRepo, oauthService);
+    const { token, isNew } = await usecase.execute({ provider, code });
 
-    return NextResponse.json(result);
-  } catch (err: any) {
-    console.error(`[소셜 로그인 오류] ${params.provider}:`, err);
-    return NextResponse.json(
-      { success: false, error: err.message || '서버 오류' },
-      { status: 500 }
-    );
+    return NextResponse.json({ success: true, token: token, isNew: isNew }, { status: 200 });
+  } catch (error: unknown) {
+    const message = error instanceof Error ? error.message : '알 수 없는 오류가 발생했습니다.';
+
+    console.error(`[소셜 로그인 오류]`, message);
+
+    return NextResponse.json({ success: false, error: message }, { status: 500 });
   }
 }

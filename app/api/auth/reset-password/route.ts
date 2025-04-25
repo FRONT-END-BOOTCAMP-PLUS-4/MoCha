@@ -19,15 +19,17 @@ export async function PUT(req: NextRequest) {
     await usecase.execute({ email, password, token, code });
 
     return NextResponse.json({ success: true, message: '비밀번호가 변경되었습니다.' });
-  } catch (err: any) {
+  } catch (error: unknown) {
+    const message = error instanceof Error ? error.message : '알 수 없는 오류가 발생했습니다.';
+
     const status =
-      err.message.includes('토큰') || err.message.includes('인증번호')
+      message.includes('토큰') || message.includes('인증번호')
         ? 401
-        : err.message.includes('사용자')
+        : message.includes('사용자')
           ? 404
           : 500;
 
-    console.error('비밀번호 재설정 실패:', err.message);
-    return NextResponse.json({ success: false, error: err.message }, { status });
+    console.error('비밀번호 재설정 실패:', message);
+    return NextResponse.json({ success: false, error: message }, { status });
   }
 }

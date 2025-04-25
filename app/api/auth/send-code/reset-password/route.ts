@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 
-import { supabase } from '@/app/shared/lib/supabase';
 import { SendCodeUseCase } from '@/application/usecases/auth/SendCodeUseCase';
+import { supabase } from '@/app/shared/lib/supabase';
 
 export async function POST(req: NextRequest) {
   try {
@@ -23,8 +23,12 @@ export async function POST(req: NextRequest) {
     const { token } = await usecase.execute(email);
 
     return NextResponse.json({ success: true, token }, { status: 200 });
-  } catch (err: any) {
-    console.error('[SendCode] 에러:', err);
-    return NextResponse.json({ success: false, notFound: true }, { status: 404 });
+  } catch (error: unknown) {
+    // 에러 메시지를 안전하게 추출
+    const message = error instanceof Error ? error.message : String(error);
+
+    console.error('[SendCode] 에러:', message);
+
+    return NextResponse.json({ success: false, notFound: true, error: message }, { status: 404 });
   }
 }
