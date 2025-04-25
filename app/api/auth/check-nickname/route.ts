@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 
 import { CheckNicknameUseCase } from '@/application/usecases/auth/CheckNicknameUseCase';
-import { SupabaseUserRepository } from '@/infra/repositories/supabase/SupabaseUserRepository';
+import { SbUserRepo } from '@/infra/repositories/supabase/SbUserRepo';
 
 export async function POST(req: NextRequest) {
   try {
@@ -15,9 +15,9 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const userRepo = new SupabaseUserRepository();
+    const userRepo = new SbUserRepo();
     const checkNicknameUsecase = new CheckNicknameUseCase(userRepo);
-    const result = await checkNicknameUsecase.execute({ nickname });
+    const result = await checkNicknameUsecase.execute(nickname);
 
     if (!result.available) {
       return NextResponse.json(

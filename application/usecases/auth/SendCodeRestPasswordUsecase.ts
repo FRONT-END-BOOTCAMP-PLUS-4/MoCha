@@ -2,18 +2,18 @@ import { supabase } from '@/app/shared/lib/supabase';
 import { sendVerificationCode } from '@/infra/utils/email';
 import { createVerificationToken } from '@/infra/utils/jwt';
 
-export class SendCodeUseCase {
+export class SendCodeRestPasswordUsecase {
   async execute(email: string): Promise<{ token: string }> {
-    // 이메일 중복 확인
-    const { data: existingUser } = await supabase
-      .from('user')
-      .select('id')
-      .eq('email', email)
-      .is('deleted_at', null)
-      .single();
+    // 이메일 유효성 검사
+    if (!email || typeof email !== 'string' || email.trim() === '') {
+      throw new Error('유효한 이메일을 입력해주세요.');
+    }
 
-    if (existingUser) {
-      throw new Error('이미 가입된 이메일입니다.');
+    // Supabase에서 해당 이메일이 존재하는지 확인
+    const { data: user } = await supabase.from('user').select('id').eq('email', email).single();
+
+    if (!user) {
+      throw new Error('존재하지 않는 계정입니다.');
     }
 
     // 인증 코드 생성 및 전송

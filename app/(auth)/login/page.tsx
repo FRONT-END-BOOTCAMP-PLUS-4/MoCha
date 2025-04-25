@@ -14,6 +14,7 @@ import { Button } from '@/app/shared/ui/button';
 import Input from '@/app/shared/ui/input';
 import PasswordInput from '@/app/shared/ui/input/PasswordInput';
 import Label from '@/app/shared/ui/label';
+import { decodeJwt } from 'jose';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
@@ -85,14 +86,23 @@ export default function LoginPage() {
         setStatus((prev) => ({ ...prev, login: 'invalid' }));
         return;
       }
-
-      const { access_token, refresh_token, user } = data;
       const { setAccessToken, setUser } = useAuthStore.getState();
-      setAccessToken(access_token);
-      setUser(user);
 
-      localStorage.setItem('access_token', access_token);
-      localStorage.setItem('refresh_token', refresh_token);
+      const { token } = data;
+      const decodedToken = decodeJwt(token) as {
+        user: {
+          id: string;
+          email: string;
+          nickname: string;
+          phone_number: string;
+          provider: string;
+        };
+      };
+
+      setAccessToken(token);
+      setUser(decodedToken.user);
+
+      localStorage.setItem('access_token', token);
 
       router.push('/');
     } catch (error) {

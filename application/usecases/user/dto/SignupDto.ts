@@ -1,7 +1,9 @@
-export interface SignupDto {
-  email: string;
-  password: string;
-  nickname: string;
-  phone_number: string;
-  provider: number;
+export class SignupRequestDto {
+  constructor(
+    public email: string,
+    public password: string,
+    public nickname: string,
+    public phone_number: string,
+    public provider: number
+  ) {}
 }

@@ -77,6 +77,11 @@ export default function FindPasswordPage() {
 
       const data = await res.json();
 
+      if (data.notFound) {
+        setStatus((prev) => ({ ...prev, email: 'notFound' }));
+        return;
+      }
+
       if (!res.ok) {
         setStatus((prev) => ({ ...prev, email: 'error' }));
         return;
@@ -167,12 +172,12 @@ export default function FindPasswordPage() {
           onChange={handleInputChange}
           placeholder="이메일을 입력해주세요."
           className="w-full"
-          error={['invalid', 'error'].includes(status.email)}
+          error={['invalid', 'error', 'notFound'].includes(status.email)}
           disabled={isVerified}
         />
         <MessageZone
           errorMessages={
-            ['invalid', 'error'].includes(status.email)
+            ['invalid', 'error', 'notFound'].includes(status.email)
               ? [getFieldMessage('email', status.email as FieldStatus)]
               : []
           }

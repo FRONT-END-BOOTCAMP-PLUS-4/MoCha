@@ -1,16 +1,16 @@
 import { supabase } from '@/app/shared/lib/supabase';
-import { SignupDto } from '@/application/usecases/user/dto/SignupDto';
-import { UserRepository } from '@/domain/repositories/UserRepository';
+import { SignupRequestDto } from '@/application/usecases/user/dto/SignupDto';
+import { UserRepo } from '@/domain/repositories/UserRepo';
 import bcrypt from 'bcryptjs';
 
 export class SignupUseCase {
-  constructor(private readonly userRepo: UserRepository) {}
+  constructor(private readonly userRepo: UserRepo) {}
 
-  async execute(dto: SignupDto) {
-    const { email, password, nickname, phone_number, provider } = dto;
+  async execute(SignupRequestDto: SignupRequestDto) {
+    const { email, password, nickname, phone_number, provider } = SignupRequestDto;
 
     // 이메일 중복 확인
-    const existingUser = await this.userRepo.findByEmail(email);
+    const existingUser = await this.userRepo.findByUserEmail(email);
     if (existingUser) {
       throw new Error('이미 가입된 이메일입니다.');
     }
@@ -26,7 +26,7 @@ export class SignupUseCase {
 
     if (!providerData) throw new Error('유효하지 않은 provider');
 
-    const providerId = providerData.id;
+    const providerId = providerData.id as number;
 
     // 유저 생성
     const createdUser = await this.userRepo.create({
@@ -35,6 +35,7 @@ export class SignupUseCase {
       nickname,
       phone_number,
       provider: providerId,
+      deleted_at: null,
     });
 
     return createdUser;

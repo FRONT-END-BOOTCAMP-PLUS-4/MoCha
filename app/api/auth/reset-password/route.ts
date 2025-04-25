@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 
 import { ResetPasswordUseCase } from '@/application/usecases/auth/ResetPasswordUseCase';
-import { SupabaseUserRepository } from '@/infra/repositories/supabase/SupabaseUserRepository';
+import { SbUserRepo } from '@/infra/repositories/supabase/SbUserRepo';
 
 export async function PUT(req: NextRequest) {
   try {
@@ -14,7 +14,8 @@ export async function PUT(req: NextRequest) {
       );
     }
 
-    const usecase = new ResetPasswordUseCase(new SupabaseUserRepository());
+    const userRepo = new SbUserRepo();
+    const usecase = new ResetPasswordUseCase(userRepo);
     await usecase.execute({ email, password, token, code });
 
     return NextResponse.json({ success: true, message: '비밀번호가 변경되었습니다.' });

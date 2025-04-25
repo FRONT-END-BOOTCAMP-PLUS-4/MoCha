@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 
 import { LoginUseCase } from '@/application/usecases/auth/LoginUseCase';
-import { SupabaseUserRepository } from '@/infra/repositories/supabase/SupabaseUserRepository';
+import { SbUserRepo } from '@/infra/repositories/supabase/SbUserRepo';
 
 export async function POST(req: NextRequest) {
   try {
@@ -16,16 +16,16 @@ export async function POST(req: NextRequest) {
     }
 
     // 로그인 UseCase 실행
-    const userRepo = new SupabaseUserRepository();
+    const userRepo = new SbUserRepo();
     const loginUsecase = new LoginUseCase(userRepo);
-    const { access_token, refresh_token, user } = await loginUsecase.execute({ email, password });
+    const { token }: { token: string } = await loginUsecase.execute({ email, password });
 
     // 응답  저장
     const res = NextResponse.json({
       success: true,
-      access_token,
-      refresh_token,
-      user,
+      token,
+      // refresh_token,
+      // user,
     });
 
     return res;

@@ -1,13 +1,13 @@
-import { ResetPasswordDto } from '@/application/usecases/auth/dto/ResetPasswordDto';
-import { UserRepository } from '@/domain/repositories/UserRepository';
+import { ResetPasswordRequestDto } from '@/application/usecases/auth/dto/ResetPasswordDto';
+import { UserRepo } from '@/domain/repositories/UserRepo';
 import { verifyEmailToken } from '@/infra/utils/jwt';
 import bcrypt from 'bcryptjs';
 
 export class ResetPasswordUseCase {
-  constructor(private readonly userRepo: UserRepository) {}
+  constructor(private readonly userRepo: UserRepo) {}
 
-  async execute(dto: ResetPasswordDto): Promise<void> {
-    const { email, password, token, code } = dto;
+  async execute(ResetPasswordRequestDto: ResetPasswordRequestDto): Promise<void> {
+    const { email, password, token, code } = ResetPasswordRequestDto;
 
     // 토큰 검증
     let payload;
@@ -22,13 +22,13 @@ export class ResetPasswordUseCase {
     }
 
     // 유저 존재 여부 확인
-    const user = await this.userRepo.findByEmail(email);
+    const user = await this.userRepo.findByUserEmail(email);
     if (!user) {
       throw new Error('사용자를 찾을 수 없습니다.');
     }
 
     // 비밀번호 해싱 후 업데이트
     const hashedPassword = await bcrypt.hash(password, 10);
-    await this.userRepo.updatePasswordByEmail(email, hashedPassword);
+    await this.userRepo.resetPasswordByUserEmail(email, hashedPassword);
   }
 }
