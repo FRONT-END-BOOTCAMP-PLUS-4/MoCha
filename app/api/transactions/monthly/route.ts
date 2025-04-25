@@ -50,7 +50,7 @@ export async function GET(req: NextRequest) {
     const endDate = req.nextUrl.searchParams.get('end');
     const sbTransactionRepo = new SbTransactionRepo();
     const monthlySummaryUsecase = new GetMonthlySummaryUsecase(sbTransactionRepo);
-    const data = await monthlySummaryUsecase.execute(id, startDate, endDate);
+    const data = await monthlySummaryUsecase.execute({ userId: id, startDate, endDate });
 
     return NextResponse.json({ status: 200, data });
   } catch (err) {
