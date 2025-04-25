@@ -1,7 +1,7 @@
-import { UserRepo } from '@/domain/repositories/UserRepo';
-import { generateAccessToken } from '@/infra/utils/jwt';
-import bcrypt from 'bcryptjs';
 import { LoginRequestDto } from './dto/LoginDto';
+import { UserRepo } from '@/domain/repositories/UserRepo';
+import bcrypt from 'bcryptjs';
+import { generateAccessToken } from '@/infra/utils/jwt';
 
 export class LoginUseCase {
   constructor(private readonly userRepo: UserRepo) {}
@@ -27,6 +27,7 @@ export class LoginUseCase {
 
     const payload = {
       user: {
+        id: user.id,
         email: user.email,
         nickname: user.nickname,
         phone_number: user.phone_number,

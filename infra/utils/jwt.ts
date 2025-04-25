@@ -7,6 +7,7 @@ interface EmailTokenPayload {
 
 interface AccessTokenPayload extends JwtPayload {
   user: {
+    id: string;
     email: string;
     nickname: string;
     phone_number: string;
@@ -27,11 +28,12 @@ export function verifyEmailToken(token: string): EmailTokenPayload {
   return jwt.verify(token, ACCESS_SECRET) as EmailTokenPayload;
 }
 
-// access_token을 검증하고 payload(id, email)를 반환
+// access_token을 검증하고 payload(user)를 반환
 export const verifyAccessToken = (token: string) => {
   const payload = jwt.verify(token, ACCESS_SECRET) as AccessTokenPayload;
   return {
     user: {
+      id: payload.user.id,
       email: payload.user.email,
       nickname: payload.user.nickname,
       phone_number: payload.user.phone_number,

@@ -1,5 +1,5 @@
-import { supabase } from '@/app/shared/lib/supabase';
 import { TransactionRepo } from '@/domain/repositories/TransactionRepo';
+import { supabase } from '@/app/shared/lib/supabase';
 
 export class SbTransactionRepo implements TransactionRepo {
   async GETmonthlySummary(
