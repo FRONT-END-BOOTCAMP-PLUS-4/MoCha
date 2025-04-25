@@ -9,15 +9,12 @@ import IncomeExpenseForm from '../components/main/modal/IncomeExpenseForm';
 
 export default function Home() {
   const [isModalOpen, setIsModalOpen] = useState(false);
-
-  const date = new Date();
-  const dateYears = date.getFullYear();
-  const dateMonths = date.getMonth() + 1;
+  const [yearMonth, setYearMonth] = useState<string>('');
 
   return (
     <div>
-      <SummaryHeader />
-      <FullCalendarWrapper />
+      <SummaryHeader yearMonth={yearMonth} />
+      <FullCalendarWrapper onYearMonthChange={setYearMonth} />
       <FloatingButton onClick={() => setIsModalOpen(true)} />
 
       <Modal isOpen={isModalOpen}>

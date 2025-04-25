@@ -8,10 +8,15 @@ import { DailyData } from '@/app/shared/types/Calendar';
 import DailyDetailModal from './modal/DailyDetailModal';
 import { formattedDate } from '@/app/shared/utils/formattedDate';
 
-export default function FullCalendarWrapper() {
+export default function FullCalendarWrapper({
+  onYearMonthChange,
+}: {
+  onYearMonthChange: (value: string) => void;
+}) {
   const [selectedDate, setSelectedDate] = useState<string | null>(null);
   const [selectedDetail, setSelectedDetail] = useState<DailyData | null>(null);
   const [daily, setDaily] = useState<DailyData[]>([]);
+  const [yearMonth, setYearMonth] = useState<string>('');
 
   const clickEvent = (date: string) => {
     const clicked = daily.find((item) => item.date === date);
@@ -35,13 +40,24 @@ export default function FullCalendarWrapper() {
     clickEvent(clickedDate);
   };
 
+  const handleDatesSet = (arg: any) => {
+    const current = new Date(arg.view.currentStart);
+    const year = current.getFullYear();
+    const month = current.getMonth() + 1;
+    const formatted = `${String(year)}-${String(month).padStart(2, '0')}`;
+    setYearMonth(formatted);
+  };
+
   useEffect(() => {
-    fetch(`/api/transactions/daily?start=2025-04`, {
+    if (!yearMonth) return;
+
+    onYearMonthChange(yearMonth);
+    fetch(`/api/transactions/daily?start=${yearMonth}`, {
       headers: { Authorization: `Bearer ${localStorage.getItem('access_token')}` },
     })
       .then((res) => res.json())
       .then((res) => setDaily(res.data));
-  }, []);
+  }, [yearMonth]);
 
   const events = useMemo(() => {
     return daily?.map((item) => ({
@@ -81,6 +97,7 @@ export default function FullCalendarWrapper() {
         selectable={true}
         dateClick={(info) => handleDateClick(info)}
         eventClick={(info) => handleEventClick(info)}
+        datesSet={handleDatesSet}
         height="auto"
       />
 

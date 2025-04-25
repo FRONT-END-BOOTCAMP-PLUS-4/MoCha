@@ -2,19 +2,21 @@
 
 import { useEffect, useState } from 'react';
 
-export default function SummaryHeader() {
+export default function SummaryHeader({ yearMonth }: { yearMonth: string }) {
   const [monthly, setMonthly] = useState({
     totalIncome: 0,
     totalExpense: 0,
   });
 
   useEffect(() => {
-    fetch(`/api/transactions/monthly?start=2025-04`, {
+    fetch(`/api/transactions/monthly?start=${yearMonth}`, {
       headers: { Authorization: `Bearer ${localStorage.getItem('access_token')}` },
     })
       .then((res) => res.json())
       .then((res) => setMonthly(res.data));
-  }, []);
+  }, [yearMonth]);
+
+  console.log(yearMonth);
 
   return (
     <div className="m-3 mb-2 flex justify-between px-4 text-sm sm:text-base">
