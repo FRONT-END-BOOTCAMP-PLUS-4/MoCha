@@ -38,6 +38,15 @@ export type DailyData = {
   date: string;
 };
 
+export interface CalendarEvent {
+  id: string;
+  title: string;
+  start: string;
+  extendedProps: {
+    type: 'income' | 'expense';
+  };
+}
+
 export type FloatingButtonProps = {
   onClick: () => void;
 };

@@ -7,6 +7,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { DailyData } from '@/app/shared/types/Calendar';
 import DailyDetailModal from './modal/DailyDetailModal';
 import { formattedDate } from '@/app/shared/utils/formattedDate';
+import { formatDailyEvents } from '@/app/shared/utils/formatDailyEvents';
 
 export default function FullCalendarWrapper({
   onYearMonthChange,
@@ -48,6 +49,8 @@ export default function FullCalendarWrapper({
     setYearMonth(formatted);
   };
 
+  const events = useMemo(() => formatDailyEvents(daily), [daily]);
+
   useEffect(() => {
     if (!yearMonth) return;
 
@@ -58,19 +61,6 @@ export default function FullCalendarWrapper({
       .then((res) => res.json())
       .then((res) => setDaily(res.data));
   }, [yearMonth]);
-
-  const events = useMemo(() => {
-    return daily?.map((item) => ({
-      id: item.date,
-      title: item.is_expense
-        ? `- ${item.amount.toLocaleString()}`
-        : `+ ${item.amount.toLocaleString()}`,
-      start: item.date,
-      extendedProps: {
-        type: item.is_expense ? 'expense' : 'income',
-      },
-    }));
-  }, [daily]);
 
   return (
     <>
