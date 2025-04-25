@@ -1,7 +1,9 @@
 export interface MonthlySummaryResponse {
-    totalIncome: number;
-    totalExpense: number;
+  totalIncome: number;
+  totalExpense: number;
 }
 export interface MonthlySummaryRequest {
-    monthly: string
+  userId: string;
+  startDate: string | null;
+  endDate: string | null;
 }
