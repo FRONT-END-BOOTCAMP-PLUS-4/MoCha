@@ -1,8 +1,11 @@
-import { SbTransactionRepo } from '@/infra/repositories/supabase/SbTransactionRepo';
-import { GetdailySummaryUsecase } from '@/application/usecases/transactions/GetDailySummaryUsecase';
 import { NextRequest, NextResponse } from 'next/server';
-// 임시작업
+
+import { GetdailySummaryUsecase } from '@/application/usecases/transactions/GetDailySummaryUsecase';
+import { SbTransactionRepo } from '@/infra/repositories/supabase/SbTransactionRepo';
 import { verifyAccessToken } from '@/infra/utils/jwt';
+
+// 임시작업
+
 
 export async function GET(req: NextRequest) {
   try {
@@ -10,7 +13,8 @@ export async function GET(req: NextRequest) {
     if (!access_token) {
       return NextResponse.json({ status: 401 });
     }
-    const { id } = verifyAccessToken(access_token);
+    const { user } = verifyAccessToken(access_token);
+    const id = user.id;
     const startDate = req.nextUrl.searchParams.get('start');
     const sbTransactionRepo = new SbTransactionRepo();
     const dailySummaryUsecase = new GetdailySummaryUsecase(sbTransactionRepo);
