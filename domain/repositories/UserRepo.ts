@@ -6,15 +6,15 @@ export interface UserRepo {
   // 회원가입
   create(user: User): Promise<User | null>;
 
+  // 닉네임 중복확인
   findByUserNickname(nickname: string): Promise<User | null>;
 
   // 닉네임과 전화번호로 이메일(id) 찾기
   findByUserNicknameAndPhone(nickname: string, phoneNumber: string): Promise<User | null>;
 
+  // 비밀번호 재설정
   resetPasswordByUserEmail(email: string, password: string): Promise<void>;
-  // findByEmail(email: string): Promise<User | null>;
-  // findByNicknameAndPhone(nickname: string, phoneNumber: string): Promise<User | null>;
-  // updatePasswordByEmail(email: string, hashedPassword: string): Promise<void>;
-  // create(user: Omit<User, 'id'>): Promise<User>;
-  // findByEmailAndProvider(email: string, providerId: number): Promise<User | null>;
+
+  // provider 이름으로 provider id 가져오기
+  getProviderIdByProviderName(providerName: string): Promise<number>;
 }
