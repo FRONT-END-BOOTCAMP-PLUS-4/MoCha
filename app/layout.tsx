@@ -2,8 +2,9 @@
 
 import './globals.css';
 
-import { useEffect } from 'react';
+import { GoogleOAuthProvider } from '@react-oauth/google';
 import { useAuthStore } from './shared/stores/authStore';
+import { useEffect } from 'react';
 
 export default function RootLayout({
   children,
@@ -46,7 +47,11 @@ export default function RootLayout({
 
   return (
     <html lang="ko">
-      <body className="bg-main-bg">{children}</body>
+      <body className="bg-main-bg">
+        <GoogleOAuthProvider clientId={process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID!}>
+          {children}
+        </GoogleOAuthProvider>
+      </body>
     </html>
   );
 }

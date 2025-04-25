@@ -16,6 +16,7 @@ import Title from '@/app/components/auth/Title';
 import { decodeJwt } from 'jose';
 import { getFieldMessage } from '@/app/shared/consts/errorMessages';
 import { useAuthStore } from '@/app/shared/stores/authStore';
+import { useGoogleLogin } from '@react-oauth/google';
 import useIsHide from '@/app/shared/hooks/useIsHide';
 import { useRouter } from 'next/navigation';
 
@@ -114,6 +115,41 @@ export default function LoginPage() {
     window.location.href = `/api/auth/${provider}/redirect`;
   };
 
+  const login = useGoogleLogin({
+    onSuccess: async (tokenResponse) => {
+      try {
+        // res google api 주소에 headers로 토큰을 보낸다.
+
+        // 그리고 res.json() 해서 userInfo를 받는다.
+        const res = await fetch('https://openidconnect.googleapis.com/v1/userinfo', {
+          headers: {
+            Authorization: `Bearer ${tokenResponse}`,
+          },
+        });
+        console.log('res: ', res);
+
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        const data = await res.json();
+        console.log('data: ', data);
+
+        if (data.success) {
+          // 2) 로컬 스토리지에 액세스 토큰 저장
+          localStorage.setItem('access_token', data.accessToken);
+          // 3) 필요하면 전역 상태에 유저 정보 저장
+          // setUser(data.user); 등
+          router.push('/'); // 로그인 후 리다이렉트
+        } else {
+          console.error('서버 로그인 실패:', data.error);
+        }
+      } catch (err) {
+        console.error('구글 로그인 처리 중 에러:', err);
+      }
+    },
+    onError: () => {
+      console.error('구글 로그인 자체가 실패했습니다.');
+    },
+  });
+
   return (
     <div>
       <LogoImage />
@@ -200,7 +236,7 @@ export default function LoginPage() {
         </div>
 
         <div className="flex flex-col justify-center gap-4">
-          <button
+          {/* <button
             onClick={() => handleSocialLogin('google')}
             className="border-gray-3 flex justify-center gap-2 rounded-md border bg-white px-4 py-3 hover:cursor-pointer"
           >
@@ -211,7 +247,8 @@ export default function LoginPage() {
               height={24}
             />
             <div>구글로 로그인하기</div>
-          </button>
+          </button> */}
+          <button onClick={() => login()}>구글로 로그인</button>
           <button
             onClick={() => handleSocialLogin('kakao')}
             className="flex justify-center gap-2 rounded-md bg-[#FEE500] px-4 py-3 hover:cursor-pointer"
