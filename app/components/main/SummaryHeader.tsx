@@ -3,10 +3,10 @@
 import { useEffect, useState } from 'react';
 
 export default function SummaryHeader({ yearMonth }: { yearMonth: string }) {
-  const [monthly, setMonthly] = useState({
-    totalIncome: 0,
-    totalExpense: 0,
-  });
+  const [monthly, setMonthly] = useState<{
+    totalIncome: number;
+    totalExpense: number;
+  } | null>(null);
 
   useEffect(() => {
     fetch(`/api/transactions/monthly?start=${yearMonth}`, {
@@ -16,7 +16,7 @@ export default function SummaryHeader({ yearMonth }: { yearMonth: string }) {
       .then((res) => setMonthly(res.data));
   }, [yearMonth]);
 
-  console.log(yearMonth);
+  if (!monthly) return null;
 
   return (
     <div className="m-3 mb-2 flex justify-between px-4 text-sm sm:text-base">
