@@ -62,7 +62,9 @@ export default function FullCalendarWrapper({
   const events = useMemo(() => {
     return daily?.map((item) => ({
       id: item.date,
-      title: item.is_expense ? `- ${item.amount}` : `+ ${item.amount}`,
+      title: item.is_expense
+        ? `- ${item.amount.toLocaleString()}`
+        : `+ ${item.amount.toLocaleString()}`,
       start: item.date,
       extendedProps: {
         type: item.is_expense ? 'expense' : 'income',
