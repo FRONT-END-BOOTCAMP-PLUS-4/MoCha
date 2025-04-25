@@ -33,14 +33,9 @@ export type DailyDetailModalProps = {
 };
 
 export type DailyData = {
+  amount: number;
+  is_expense: boolean;
   date: string;
-  income: number;
-  expense: number;
-  transactions?: Transaction[];
-};
-
-export type FullCalendarWrapperProps = {
-  daily: DailyData[];
 };
 
 export type FloatingButtonProps = {

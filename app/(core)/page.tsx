@@ -17,7 +17,7 @@ export default function Home() {
   return (
     <div>
       <SummaryHeader />
-      <FullCalendarWrapper daily={mockData.daily} />
+      <FullCalendarWrapper />
       <FloatingButton onClick={() => setIsModalOpen(true)} />
 
       <Modal isOpen={isModalOpen}>

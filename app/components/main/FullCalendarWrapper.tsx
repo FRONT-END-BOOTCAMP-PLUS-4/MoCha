@@ -3,17 +3,18 @@
 import FullCalendar from '@fullcalendar/react';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import interactionPlugin from '@fullcalendar/interaction';
-import { useMemo, useState } from 'react';
-import { DailyData, FullCalendarWrapperProps } from '@/app/shared/types/Calendar';
+import { useEffect, useMemo, useState } from 'react';
+import { DailyData } from '@/app/shared/types/Calendar';
 import DailyDetailModal from './modal/DailyDetailModal';
 import { formattedDate } from '@/app/shared/utils/formattedDate';
 
-export default function FullCalendarWrapper({ daily }: FullCalendarWrapperProps) {
+export default function FullCalendarWrapper() {
   const [selectedDate, setSelectedDate] = useState<string | null>(null);
   const [selectedDetail, setSelectedDetail] = useState<DailyData | null>(null);
+  const [daily, setDaily] = useState<DailyData[]>([]);
 
   const clickEvent = (date: string) => {
-    const clicked = daily.find((d) => d.date === date);
+    const clicked = daily.find((item) => item.date === date);
     if (clicked) {
       setSelectedDate(date);
       setSelectedDetail(clicked);
@@ -34,30 +35,23 @@ export default function FullCalendarWrapper({ daily }: FullCalendarWrapperProps)
     clickEvent(clickedDate);
   };
 
+  useEffect(() => {
+    fetch(`/api/transactions/daily?start=2025-04`, {
+      headers: { Authorization: `Bearer ${localStorage.getItem('access_token')}` },
+    })
+      .then((res) => res.json())
+      .then((res) => setDaily(res.data));
+  }, []);
+
   const events = useMemo(() => {
-    return daily.flatMap((entry) => {
-      const items = [];
-
-      if (entry.income > 0) {
-        items.push({
-          id: `income-${entry.date}`,
-          title: `+${entry.income.toLocaleString()}`,
-          date: entry.date,
-          type: 'income',
-        });
-      }
-
-      if (entry.expense > 0) {
-        items.push({
-          id: `expense-${entry.date}`,
-          title: `-${entry.expense.toLocaleString()}`,
-          date: entry.date,
-          type: 'expense',
-        });
-      }
-
-      return items;
-    });
+    return daily?.map((item) => ({
+      id: item.date,
+      title: item.is_expense ? `- ${item.amount}` : `+ ${item.amount}`,
+      start: item.date,
+      extendedProps: {
+        type: item.is_expense ? 'expense' : 'income',
+      },
+    }));
   }, [daily]);
 
   return (
@@ -77,7 +71,9 @@ export default function FullCalendarWrapper({ daily }: FullCalendarWrapperProps)
           const bgColor = isIncome ? 'bg-income' : 'bg-expense';
 
           return (
-            <div className={`truncate rounded px-1 text-xs font-medium text-white ${bgColor}`}>
+            <div
+              className={`truncate rounded px-1 text-end text-xs font-medium text-white ${bgColor}`}
+            >
               {arg.event.title}
             </div>
           );
@@ -87,18 +83,20 @@ export default function FullCalendarWrapper({ daily }: FullCalendarWrapperProps)
         eventClick={(info) => handleEventClick(info)}
         height="auto"
       />
+
       {selectedDate && selectedDetail && (
         <DailyDetailModal
           date={selectedDate}
-          income={selectedDetail.income}
-          expense={selectedDetail.expense}
-          transactions={selectedDetail.transactions || []}
+          income={selectedDetail.is_expense ? 0 : selectedDetail.amount}
+          expense={selectedDetail.is_expense ? selectedDetail.amount : 0}
+          transactions={[]}
           onClose={() => {
             document.body.style.overflow = 'auto';
             setSelectedDate(null);
           }}
         />
       )}
+
       <style jsx global>{`
         .fc-h-event {
           background-color: transparent !important;
