@@ -1,8 +1,10 @@
+import { NextRequest, NextResponse } from 'next/server';
+
 import { GetMonthlySummaryUsecase } from '@/application/usecases/transactions/GetMonthlySummaryUsecase';
 import { SbTransactionRepo } from '@/infra/repositories/supabase/SbTransactionRepo';
-import { NextRequest, NextResponse } from 'next/server';
-// 임시작업
 import { verifyAccessToken } from '@/infra/utils/jwt';
+
+// 임시작업
 
 /*
     supabaseorm 참조: https://supabase.com/docs/reference/javascript/typescript-support
@@ -45,7 +47,8 @@ export async function GET(req: NextRequest) {
     if (!access_token) {
       return NextResponse.json({ status: 401 });
     }
-    const { id } = verifyAccessToken(access_token);
+    const { user } = verifyAccessToken(access_token);
+    const id = user.id;
     const startDate = req.nextUrl.searchParams.get('start');
     const endDate = req.nextUrl.searchParams.get('end');
     const sbTransactionRepo = new SbTransactionRepo();

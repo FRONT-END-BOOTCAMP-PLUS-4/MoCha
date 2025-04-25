@@ -1,5 +1,6 @@
 'use client';
 
+import { ChangeEvent, useState } from 'react';
 import {
   doPasswordsMatch,
   isValidEmail,
@@ -7,18 +8,17 @@ import {
   isValidPassword,
   isValidPhoneNumber,
 } from '@/app/shared/consts/validation';
-import { ChangeEvent, useState } from 'react';
 
+import { Button } from '@/app/shared/ui/button';
+import { FormStatus } from '@/app/shared/types/FormStatus';
+import Input from '@/app/shared/ui/input';
+import Label from '@/app/shared/ui/label';
 import LogoImage from '@/app/components/auth/LogoImage';
 import MessageZone from '@/app/components/auth/MessageZone';
+import PasswordInput from '@/app/shared/ui/input/PasswordInput';
 import Title from '@/app/components/auth/Title';
 import { getFieldMessage } from '@/app/shared/consts/errorMessages';
 import useIsHide from '@/app/shared/hooks/useIsHide';
-import { FormStatus } from '@/app/shared/types/FormStatus';
-import { Button } from '@/app/shared/ui/button';
-import Input from '@/app/shared/ui/input';
-import PasswordInput from '@/app/shared/ui/input/PasswordInput';
-import Label from '@/app/shared/ui/label';
 import { useRouter } from 'next/navigation';
 
 export default function SignupPage() {
@@ -371,7 +371,7 @@ export default function SignupPage() {
             id="phoneNumber"
             value={form.phoneNumber}
             onChange={handleInputChange}
-            placeholder="전화번호를 입력해주세요."
+            placeholder="'-'를 빼고 전화번호를 입력해주세요."
             className="w-full"
             error={status.phoneNumber === 'invalid'}
           />
