@@ -1,7 +1,7 @@
+import { useEffect } from 'react';
 import CategoryList from '@/app/components/user/presentation/CategoryList';
 import CategoryPieChart from '@/app/components/user/presentation/CategoryPieChart';
 import { Category } from '@/app/shared/types/Chart';
-
 const data1: Category[] = [
   { name: '급여', price: 500000, category: 'salary' },
   { name: '투자수익', price: 500000, category: 'investment' },
@@ -25,6 +25,14 @@ const data2: Category[] = [
 
 export default function CategoryContainer() {
   
+  useEffect(()=>{
+    fetch('/api/category?date=2025-04',{
+      headers: { Authorization: `Bearer ${localStorage.getItem('access_token')}`},
+    })
+    .then( res => res.json())
+    .then( data => console.log(data))
+  },[])
+
   return (
     <div className="md:flex md:gap-3">
       <div className="flex grow basis-0 flex-col items-center p-2">
