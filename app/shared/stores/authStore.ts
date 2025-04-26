@@ -4,7 +4,7 @@ type User = {
   email: string;
   nickname: string;
   phone_number: string;
-  provider: string;
+  provider: number;
 };
 
 type AuthState = {

@@ -23,7 +23,7 @@ export default function PasswordInput({
   return (
     <div
       className={cn(
-        'flex items-center rounded-md border px-4 py-3',
+        'flex h-12.5 items-center rounded-md border px-4 py-3',
         error === 'invalid' ? 'border-error' : 'border-gray-4'
       )}
     >

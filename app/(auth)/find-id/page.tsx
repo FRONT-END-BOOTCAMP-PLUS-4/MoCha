@@ -1,17 +1,17 @@
 'use client';
 
-import { isValidNickname, isValidPhoneNumber } from '@/app/shared/consts/validation';
 import { ChangeEvent, useState } from 'react';
+import { isValidNickname, isValidPhoneNumber } from '@/app/shared/consts/validation';
 
-import LogoImage from '@/app/components/auth/LogoImage';
-import MessageZone from '@/app/components/auth/MessageZone';
-import Title from '@/app/components/auth/Title';
-import Modal from '@/app/components/main/modal/TransactionModal';
-import { getFieldMessage } from '@/app/shared/consts/errorMessages';
 import { Button } from '@/app/shared/ui/button';
 import Input from '@/app/shared/ui/input';
 import Label from '@/app/shared/ui/label';
 import Link from 'next/link';
+import LogoImage from '@/app/components/auth/LogoImage';
+import MessageZone from '@/app/components/auth/MessageZone';
+import Modal from '@/app/components/main/modal/TransactionModal';
+import Title from '@/app/components/auth/Title';
+import { getFieldMessage } from '@/app/shared/consts/errorMessages';
 import { useRouter } from 'next/navigation';
 
 function formatPhoneNumber(phone: string): string {
@@ -101,6 +101,7 @@ export default function FindIdPage() {
             placeholder="닉네임을 입력해주세요."
             className="w-full"
             error={status.nickname === 'invalid'}
+            maxLength={8}
           />
           <MessageZone
             errorMessages={
@@ -119,6 +120,7 @@ export default function FindIdPage() {
             placeholder="전화번호를 입력해주세요."
             className="w-full"
             error={status.phoneNumber === 'invalid'}
+            maxLength={11}
           />
           <MessageZone
             errorMessages={

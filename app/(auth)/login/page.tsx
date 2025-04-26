@@ -5,8 +5,9 @@ import { isValidEmail, isValidPassword } from '@/app/shared/consts/validation';
 
 import { Button } from '@/app/shared/ui/button';
 import { FormStatus } from '@/app/shared/types/FormStatus';
-import Image from 'next/image';
+import GoogleLoginButton from '@/app/components/auth/GoogleLoginButton';
 import Input from '@/app/shared/ui/input';
+import KakaoLoginButton from '@/app/components/auth/KakaoLoginButton';
 import Label from '@/app/shared/ui/label';
 import Link from 'next/link';
 import LogoImage from '@/app/components/auth/LogoImage';
@@ -94,7 +95,7 @@ export default function LoginPage() {
           email: string;
           nickname: string;
           phone_number: string;
-          provider: string;
+          provider: number;
         };
       };
 
@@ -108,10 +109,6 @@ export default function LoginPage() {
       console.error('로그인 실패:', error);
       setStatus((prev) => ({ ...prev, login: 'error' }));
     }
-  };
-
-  const handleSocialLogin = (provider: 'google' | 'kakao') => {
-    window.location.href = `/api/auth/${provider}/redirect`;
   };
 
   return (
@@ -137,6 +134,7 @@ export default function LoginPage() {
             className="w-full"
             error={['invalid', 'error'].includes(status.email ?? '')}
             autoComplete="email"
+            maxLength={20}
           />
           <MessageZone
             errorMessages={
@@ -200,30 +198,8 @@ export default function LoginPage() {
         </div>
 
         <div className="flex flex-col justify-center gap-4">
-          <button
-            onClick={() => handleSocialLogin('google')}
-            className="border-gray-3 flex justify-center gap-2 rounded-md border bg-white px-4 py-3 hover:cursor-pointer"
-          >
-            <Image
-              src="/images/social/google-logo.svg"
-              alt="구글 로그인 아이콘"
-              width={20}
-              height={24}
-            />
-            <div>구글로 로그인하기</div>
-          </button>
-          <button
-            onClick={() => handleSocialLogin('kakao')}
-            className="flex justify-center gap-2 rounded-md bg-[#FEE500] px-4 py-3 hover:cursor-pointer"
-          >
-            <Image
-              src="/images/social/kakao-logo.svg"
-              alt="카카오 로그인 아이콘"
-              width={20}
-              height={24}
-            />
-            <div>카카오톡으로 로그인하기</div>
-          </button>
+          <GoogleLoginButton />
+          <KakaoLoginButton />
         </div>
       </div>
     </div>

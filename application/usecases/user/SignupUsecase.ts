@@ -4,9 +4,10 @@ import { UserRepo } from '@/domain/repositories/UserRepo';
 import bcrypt from 'bcryptjs';
 
 export class SignupUseCase {
-  constructor(private readonly userRepo: UserRepo) {}
+  constructor(public userRepo: UserRepo) {}
 
   async execute(SignupRequestDto: SignupRequestDto) {
+    console.log('SignupRequestDto: ', SignupRequestDto);
     const { email, password, nickname, phone_number, provider } = SignupRequestDto;
 
     // 이메일 중복 확인
@@ -16,7 +17,7 @@ export class SignupUseCase {
     }
 
     // 비밀번호 해싱
-    const hashedPassword = await bcrypt.hash(password, 10);
+    const hashedPassword = await bcrypt.hash(password as string, 10);
 
     const { data: providerData, error: providerError } = await supabase
       .from('provider')

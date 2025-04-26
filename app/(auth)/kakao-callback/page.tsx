@@ -1,16 +1,14 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { useParams, useRouter, useSearchParams } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 
 import { decodeJwt } from 'jose';
 import { useAuthStore } from '@/app/shared/stores/authStore';
 
-export default function SocialCallbackPage() {
+export default function KakaoCallbackPage() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const params = useParams();
-  const provider = params.provider as string;
 
   const { setAccessToken, setUser } = useAuthStore.getState();
 
@@ -18,11 +16,11 @@ export default function SocialCallbackPage() {
 
   useEffect(() => {
     const code = searchParams.get('code');
-    if (!code || !provider) return;
+    if (!code) return;
 
     const handleSocialCallback = async () => {
       try {
-        const res = await fetch(`/api/auth/${provider}/exchange`, {
+        const res = await fetch(`/api/auth/kakao/exchange`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ code }),
@@ -43,7 +41,7 @@ export default function SocialCallbackPage() {
             email: string;
             nickname: string;
             phone_number: string;
-            provider: string;
+            provider: number;
           };
         };
 
@@ -62,7 +60,7 @@ export default function SocialCallbackPage() {
     };
 
     handleSocialCallback();
-  }, [searchParams, provider]);
+  }, [searchParams]);
 
   return <div>{loading ? '로그인 처리 중입니다...' : '잠시만 기다려 주세요.'}</div>;
 }

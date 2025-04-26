@@ -4,7 +4,14 @@ export interface UserRepo {
   findByUserEmail(email: string): Promise<User | null>;
 
   // 회원가입
-  create(user: User): Promise<User | null>;
+  create(user: {
+    email: string;
+    password: string;
+    nickname: string | null;
+    phone_number: string | null;
+    provider: number;
+    deleted_at: null;
+  }): Promise<User | null>;
 
   // 닉네임 중복확인
   findByUserNickname(nickname: string): Promise<User | null>;

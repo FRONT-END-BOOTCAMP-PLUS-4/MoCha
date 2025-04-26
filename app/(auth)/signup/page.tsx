@@ -24,6 +24,7 @@ import { useRouter } from 'next/navigation';
 export default function SignupPage() {
   const router = useRouter();
   const { isHide, onToggle } = useIsHide();
+  const [sending, setSending] = useState(false);
 
   const [form, setForm] = useState({
     email: '',
@@ -78,10 +79,13 @@ export default function SignupPage() {
   };
 
   const handleSendCode = async () => {
+    if (sending) return;
     if (!isValidEmail(form.email)) {
       setStatus((prev) => ({ ...prev, email: 'invalid' }));
       return;
     }
+
+    setSending(true);
 
     try {
       const res = await fetch('/api/auth/send-code', {
@@ -110,6 +114,8 @@ export default function SignupPage() {
     } catch (err) {
       console.error('이메일 인증 요청 실패:', err);
       setStatus((prev) => ({ ...prev, email: 'error' }));
+    } finally {
+      setSending(false);
     }
   };
 
@@ -236,6 +242,8 @@ export default function SignupPage() {
               className="w-full"
               onClick={handleSendCode}
               disabled={status.email !== 'valid' || status.code === 'success'}
+              isLoading={sending}
+              loadingText="전송중..."
             >
               인증번호 발송
             </Button>
@@ -300,6 +308,7 @@ export default function SignupPage() {
             isHide={isHide}
             onToggle={onToggle}
             autoComplete="new-password"
+            maxLength={20}
           />
           <MessageZone
             errorMessages={
@@ -320,6 +329,7 @@ export default function SignupPage() {
             isHide={isHide}
             onToggle={onToggle}
             autoComplete="new-password"
+            maxLength={20}
           />
           <MessageZone
             errorMessages={
@@ -341,6 +351,7 @@ export default function SignupPage() {
               placeholder="닉네임을 입력해주세요."
               className="flex-1"
               error={['invalid', 'duplicated', 'error'].includes(status.nickname ?? '')}
+              maxLength={8}
             />
             <Button
               intent="primary"
@@ -374,6 +385,7 @@ export default function SignupPage() {
             placeholder="'-'를 빼고 전화번호를 입력해주세요."
             className="w-full"
             error={status.phoneNumber === 'invalid'}
+            maxLength={11}
           />
           <MessageZone
             errorMessages={
