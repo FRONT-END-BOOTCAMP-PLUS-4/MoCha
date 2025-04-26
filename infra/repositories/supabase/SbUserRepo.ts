@@ -1,6 +1,6 @@
-import { supabase } from '@/app/shared/lib/supabase';
 import { User } from '@/domain/entities/User';
 import { UserRepo } from '@/domain/repositories/UserRepo';
+import { supabase } from '@/app/shared/lib/supabase';
 
 export class SbUserRepo implements UserRepo {
   async findByUserEmail(email: string): Promise<User | null> {
@@ -34,8 +34,6 @@ export class SbUserRepo implements UserRepo {
       .select('email, nickname, phone_number, provider')
       .eq('nickname', nickname)
       .single();
-
-    console.log('data: ', data);
 
     if (error || !data) return null;
 

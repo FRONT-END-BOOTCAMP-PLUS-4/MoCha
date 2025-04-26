@@ -21,9 +21,12 @@ export async function POST(req: NextRequest) {
 
     // 소셜 로그인 UseCase 실행
     const usecase = new KakaoLoginUseCase(userRepo, oauthService);
-    const { token, isNew } = await usecase.execute(code);
+    const { access_token, refresh_token, isNew } = await usecase.execute(code);
 
-    return NextResponse.json({ success: true, token, isNew }, { status: 200 });
+    return NextResponse.json(
+      { success: true, access_token, refresh_token, isNew },
+      { status: 200 }
+    );
   } catch (error: unknown) {
     const message = error instanceof Error ? error.message : '알 수 없는 오류가 발생했습니다.';
 

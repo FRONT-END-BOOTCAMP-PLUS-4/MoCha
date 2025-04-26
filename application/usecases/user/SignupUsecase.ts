@@ -1,13 +1,12 @@
-import { supabase } from '@/app/shared/lib/supabase';
 import { SignupRequestDto } from '@/application/usecases/user/dto/SignupDto';
 import { UserRepo } from '@/domain/repositories/UserRepo';
 import bcrypt from 'bcryptjs';
+import { supabase } from '@/app/shared/lib/supabase';
 
 export class SignupUseCase {
   constructor(public userRepo: UserRepo) {}
 
   async execute(SignupRequestDto: SignupRequestDto) {
-    console.log('SignupRequestDto: ', SignupRequestDto);
     const { email, password, nickname, phone_number, provider } = SignupRequestDto;
 
     // 이메일 중복 확인

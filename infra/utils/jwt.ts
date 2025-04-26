@@ -48,6 +48,14 @@ export const generateAccessToken = (payload: object) => {
 };
 
 // refresh_token 생성
-export const generateRefreshToken = (payload: object) => {
-  return jwt.sign(payload, REFRESH_SECRET, { expiresIn: '7d' });
-};
+export const generateRefreshToken = (userEmail: string) =>
+  jwt.sign({ sub: userEmail }, REFRESH_SECRET, { expiresIn: '7d' });
+
+export function verifyRefreshToken(token: string) {
+  // { sub: 'userId', iat, exp } 형태로 디코딩
+  return jwt.verify(token, REFRESH_SECRET) as {
+    sub: string;
+    iat: number;
+    exp: number;
+  };
+}
