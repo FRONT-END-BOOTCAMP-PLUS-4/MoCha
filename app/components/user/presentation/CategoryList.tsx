@@ -1,20 +1,24 @@
 'use client';
+// package
 import { type ReactElement } from 'react';
 import { Dot } from 'lucide-react'
-import { type CategoryProps} from '@/app/shared/types/Chart';
-import { categoryColorMap } from '@/app/shared/consts/categoryColorMap';
+// slice
+import { type CategoryItem} from '../container/CategoryContainer';
 
-export default function CategoryList(props: CategoryProps): ReactElement {
-    const { categoryList } = props;
+export default function CategoryList(props: {categoryList: CategoryItem[], type?: string}): ReactElement {
+  const { categoryList, type } = props;
+  const defaultValue = [{amount: 1, name: `${type}`, color: '#9e9e9e'}];
+  const isValue:boolean = !!categoryList.length;
+  const replaceValue = isValue ? categoryList : defaultValue;
+
   return (
     <ul className="p-2 max-w-150 flex justify-center flex-wrap">
-      {categoryList.map((item, idx) => {
-        const color = categoryColorMap[item.category] || categoryColorMap.other
+      {replaceValue.map((item, idx) => {
         return (
           <li key={idx} className={`flex items-center gap-1 text-shadow-lg/5`}>
-            <Dot size={15} strokeWidth={15} color={color} />
+            <Dot size={13} strokeWidth={13} color={item.color} />
             <span className="text-gray-6">{item.name}</span>
-            <span className="'text-black'">{item.price.toLocaleString()}</span>
+            {isValue && <span className="'text-black'">{item.amount.toLocaleString()}</span>}
           </li>
         );
       })}
