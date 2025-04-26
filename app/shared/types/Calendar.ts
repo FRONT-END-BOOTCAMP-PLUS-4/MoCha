@@ -1,34 +1,33 @@
 import { ReactNode } from 'react';
 
 export type Category =
-  | 'salary'
-  | 'investment'
-  | 'allowance'
-  | 'refund'
-  | 'food'
-  | 'housing'
-  | 'transportation'
-  | 'communication'
-  | 'medical'
-  | 'shopping'
-  | 'education'
-  | 'culture'
-  | 'event'
-  | 'other';
+  | '급여'
+  | '투자수익'
+  | '용돈'
+  | '환급&환불'
+  | '식비'
+  | '생활'
+  | '교통'
+  | '통신'
+  | '의료'
+  | '쇼핑'
+  | '교육'
+  | '문화&여가'
+  | '경조사'
+  | '기타';
 
 export type Transaction = {
   id: string;
   category: Category;
   memo?: string;
   amount: number;
-  type: 'income' | 'expense';
+  is_expense: boolean;
 };
 
 export type DailyDetailModalProps = {
   date: string;
   income: number;
   expense: number;
-  transactions: Transaction[];
   onClose: () => void;
 };
 

@@ -112,7 +112,6 @@ export default function FullCalendarWrapper({
           date={selectedDate}
           income={selectedDetail.income}
           expense={selectedDetail.expense}
-          transactions={[]}
           onClose={() => {
             document.body.style.overflow = 'auto';
             setSelectedDate(null);
