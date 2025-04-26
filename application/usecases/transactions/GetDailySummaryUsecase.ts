@@ -17,7 +17,7 @@ export class GetdailySummaryUsecase {
 
       const padMonths = `${months}`.padStart(2, '0');
       const start = `${year}-${padMonths}-1`;
-      const end = `${year}-${padMonths}-${monthsLastDay}`;
+      const end = `${year}-${Number(padMonths) + 1}-1`;
 
       const transactionRepo = await this.transactionRepo.GETdailySummary(
         request.userId,
