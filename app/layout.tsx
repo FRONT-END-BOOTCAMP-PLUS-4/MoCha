@@ -38,7 +38,7 @@ export default function RootLayout({
         }
       } catch (err) {
         console.error(err);
-        localStorage.removeItem('access_token');
+        // localStorage.removeItem('access_token');
         clearAuth();
       }
     })();
