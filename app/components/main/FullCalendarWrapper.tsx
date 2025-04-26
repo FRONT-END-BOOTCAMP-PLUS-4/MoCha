@@ -4,9 +4,10 @@ import FullCalendar from '@fullcalendar/react';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import interactionPlugin from '@fullcalendar/interaction';
 import { useEffect, useMemo, useState } from 'react';
-import { DailyData } from '@/app/shared/types/Calendar';
+import { DailyData, DailyTransaction } from '@/app/shared/types/Calendar';
 import DailyDetailModal from './modal/DailyDetailModal';
 import { formattedDate } from '@/app/shared/utils/formattedDate';
+import { formatDailyEvents } from '@/app/shared/utils/formatDailyEvents';
 
 export default function FullCalendarWrapper({
   onYearMonthChange,
@@ -14,15 +15,29 @@ export default function FullCalendarWrapper({
   onYearMonthChange: (value: string) => void;
 }) {
   const [selectedDate, setSelectedDate] = useState<string | null>(null);
-  const [selectedDetail, setSelectedDetail] = useState<DailyData | null>(null);
+  const [selectedDetail, setSelectedDetail] = useState<DailyTransaction | null>(null);
   const [daily, setDaily] = useState<DailyData[]>([]);
   const [yearMonth, setYearMonth] = useState<string>('');
 
   const clickEvent = (date: string) => {
-    const clicked = daily.find((item) => item.date === date);
-    if (clicked) {
+    const clickedItems = daily.filter((item) => item.date.slice(0, 10) === date);
+
+    if (clickedItems.length > 0) {
+      const income = clickedItems
+        .filter((item) => !item.is_expense)
+        .reduce((sum, item) => sum + item.amount, 0);
+
+      const expense = clickedItems
+        .filter((item) => item.is_expense)
+        .reduce((sum, item) => sum + item.amount, 0);
+
       setSelectedDate(date);
-      setSelectedDetail(clicked);
+      setSelectedDetail({
+        income,
+        expense,
+        transactions: clickedItems,
+      });
+
       document.body.style.overflow = 'hidden'; // 스크롤 방지
     } else {
       console.log('No data found for the clicked date.');
@@ -48,6 +63,8 @@ export default function FullCalendarWrapper({
     setYearMonth(formatted);
   };
 
+  const events = useMemo(() => formatDailyEvents(daily), [daily]);
+
   useEffect(() => {
     if (!yearMonth) return;
 
@@ -58,17 +75,6 @@ export default function FullCalendarWrapper({
       .then((res) => res.json())
       .then((res) => setDaily(res.data));
   }, [yearMonth]);
-
-  const events = useMemo(() => {
-    return daily?.map((item) => ({
-      id: item.date,
-      title: item.is_expense ? `- ${item.amount}` : `+ ${item.amount}`,
-      start: item.date,
-      extendedProps: {
-        type: item.is_expense ? 'expense' : 'income',
-      },
-    }));
-  }, [daily]);
 
   return (
     <>
@@ -104,12 +110,12 @@ export default function FullCalendarWrapper({
       {selectedDate && selectedDetail && (
         <DailyDetailModal
           date={selectedDate}
-          income={selectedDetail.is_expense ? 0 : selectedDetail.amount}
-          expense={selectedDetail.is_expense ? selectedDetail.amount : 0}
-          transactions={[]}
+          income={selectedDetail.income}
+          expense={selectedDetail.expense}
           onClose={() => {
             document.body.style.overflow = 'auto';
             setSelectedDate(null);
+            setSelectedDetail(null);
           }}
         />
       )}

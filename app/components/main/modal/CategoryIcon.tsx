@@ -1,7 +1,6 @@
 'use client';
 
-import { categoryBgColorMap, categoryColorMap } from '@/app/shared/consts/categoryColorMap';
-import { Category } from '@/app/shared/types/Calendar';
+import { Category, CategoryIconProps } from '@/app/shared/types/Calendar';
 import {
   CircleDollarSign,
   ChartLine,
@@ -20,33 +19,30 @@ import {
 } from 'lucide-react';
 import { JSX } from 'react';
 
-const CategoryIcon = ({ category }: { category: Category }): JSX.Element => {
-  const color = categoryColorMap[category];
-  const bgColor = categoryBgColorMap[category];
-
+const CategoryIcon = ({ name, primaryColor, secondaryColor }: CategoryIconProps): JSX.Element => {
   const categoryIcons: Record<Category, JSX.Element> = {
-    salary: <CircleDollarSign stroke={color} />,
-    investment: <ChartLine stroke={color} />,
-    allowance: <Banknote stroke={color} />,
-    refund: <BanknoteArrowDown stroke={color} />,
-    food: <Utensils stroke={color} />,
-    housing: <House stroke={color} />,
-    transportation: <TramFront stroke={color} />,
-    communication: <Wifi stroke={color} />,
-    medical: <BriefcaseMedical stroke={color} />,
-    shopping: <ShoppingCart stroke={color} />,
-    education: <GraduationCap stroke={color} />,
-    culture: <Clapperboard stroke={color} />,
-    event: <Calendar stroke={color} />,
-    other: <PiggyBank stroke={color} />,
+    급여: <CircleDollarSign stroke={primaryColor} />,
+    투자수익: <ChartLine stroke={primaryColor} />,
+    용돈: <Banknote stroke={primaryColor} />,
+    '환급&환불': <BanknoteArrowDown stroke={primaryColor} />,
+    식비: <Utensils stroke={primaryColor} />,
+    생활: <House stroke={primaryColor} />,
+    교통: <TramFront stroke={primaryColor} />,
+    통신: <Wifi stroke={primaryColor} />,
+    의료: <BriefcaseMedical stroke={primaryColor} />,
+    쇼핑: <ShoppingCart stroke={primaryColor} />,
+    교육: <GraduationCap stroke={primaryColor} />,
+    '문화&여가': <Clapperboard stroke={primaryColor} />,
+    경조사: <Calendar stroke={primaryColor} />,
+    기타: <PiggyBank stroke={primaryColor} />,
   };
 
   return (
     <span
       className={`flex size-9 items-center justify-center rounded-full`}
-      style={{ backgroundColor: bgColor }}
+      style={{ backgroundColor: secondaryColor }}
     >
-      {categoryIcons[category] || categoryIcons['other']}
+      {categoryIcons[name] || categoryIcons['기타']}
     </span>
   );
 };

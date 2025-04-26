@@ -16,7 +16,6 @@ export class GetMonthlySummaryUsecase {
       const [year, months] = (request.startDate ?? `${currentYears}-${currentMonths}`)
         .split('-')
         .map(Number);
-      console.log('months:', months);
       const monthsLastDay = new Date(year, months, 0).getDate();
       const padMonths = `${months}`.padStart(2, '0');
       const start = `${year}-${padMonths}-1`;

@@ -2,20 +2,23 @@
 
 import { Transaction } from '@/app/shared/types/Calendar';
 import CategoryIcon from './CategoryIcon';
-import { categoryKoMap } from '@/app/shared/consts/categoryKoMap';
 
 export default function TransactionItem({ item }: { item: Transaction }) {
   return (
     <li className="flex items-center justify-between px-6 py-4">
       <div className="flex items-center gap-4">
-        <CategoryIcon category={item.category} />
+        <CategoryIcon
+          name={item.category.name}
+          primaryColor={item.category.primary_color}
+          secondaryColor={item.category.secondary_color}
+        />
         <div>
-          <p className="font-bold">{categoryKoMap[item.category]}</p>
+          <p className="font-bold">{item.category.name}</p>
           {item.memo && <p className="text-sm text-gray-500">{item.memo}</p>}
         </div>
       </div>
-      <p className={`font-semibold ${item.type === 'income' ? 'text-income' : 'text-expense'}`}>
-        {item.type === 'income' ? '+' : '-'}
+      <p className={`font-semibold ${item.is_expense ? 'text-expense' : 'text-income'}`}>
+        {item.is_expense ? '-' : '+'}
         {item.amount.toLocaleString()}
       </p>
     </li>
