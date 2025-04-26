@@ -18,14 +18,13 @@ export async function POST(req: NextRequest) {
     // 로그인 UseCase 실행
     const userRepo = new SbUserRepo();
     const loginUsecase = new LoginUseCase(userRepo);
-    const { token } = await loginUsecase.execute({ email, password });
+    const { access_token, refresh_token } = await loginUsecase.execute({ email, password });
 
     // 응답  저장
     const res = NextResponse.json({
       success: true,
-      token,
-      // refresh_token,
-      // user,
+      access_token,
+      refresh_token,
     });
 
     return res;

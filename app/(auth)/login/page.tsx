@@ -89,8 +89,8 @@ export default function LoginPage() {
       }
       const { setAccessToken, setUser } = useAuthStore.getState();
 
-      const { token } = data;
-      const decodedToken = decodeJwt(token) as {
+      const { access_token, refresh_token } = data;
+      const decodedToken = decodeJwt(access_token) as {
         user: {
           email: string;
           nickname: string;
@@ -99,10 +99,11 @@ export default function LoginPage() {
         };
       };
 
-      setAccessToken(token);
+      setAccessToken(access_token);
       setUser(decodedToken.user);
 
-      localStorage.setItem('access_token', token);
+      localStorage.setItem('access_token', access_token);
+      localStorage.setItem('refresh_token', refresh_token);
 
       router.push('/');
     } catch (error) {
@@ -134,7 +135,6 @@ export default function LoginPage() {
             className="w-full"
             error={['invalid', 'error'].includes(status.email ?? '')}
             autoComplete="email"
-            maxLength={20}
           />
           <MessageZone
             errorMessages={
@@ -157,6 +157,7 @@ export default function LoginPage() {
             isHide={isHide}
             onToggle={onToggle}
             autoComplete="current-password"
+            maxLength={20}
           />
           <MessageZone
             errorMessages={[
