@@ -1,6 +1,6 @@
+import { supabase } from '@/app/shared/lib/supabase';
 import { User } from '@/domain/entities/User';
 import { UserRepo } from '@/domain/repositories/UserRepo';
-import { supabase } from '@/app/shared/lib/supabase';
 
 export class SbUserRepo implements UserRepo {
   async findByUserEmail(email: string): Promise<User | null> {
@@ -11,7 +11,14 @@ export class SbUserRepo implements UserRepo {
     return data;
   }
 
-  async create(user: User): Promise<User> {
+  async create(user: {
+    email: string;
+    password: string;
+    nickname: string;
+    phone_number: string;
+    provider: number;
+    deleted_at: null;
+  }): Promise<User> {
     const { data, error } = await supabase.from('user').insert([user]).select().single();
 
     if (error || !data) {

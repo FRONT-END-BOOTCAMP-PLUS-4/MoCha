@@ -1,27 +1,24 @@
-import { OAuthService } from '@/domain/services/OAuthService';
-import { SocialLoginRequestDto } from './dto/SocialLoginDto';
+import { KakaoOAuthService } from '@/infra/oauth/KakaoOAuthService';
 import { User } from '@/domain/entities/User';
 import { UserRepo } from '@/domain/repositories/UserRepo';
 import { generateAccessToken } from '@/infra/utils/jwt';
 
-export class SocialLoginUseCase {
+export class KakaoLoginUseCase {
   constructor(
-    private readonly userRepo: UserRepo,
-    private readonly oauthService: OAuthService
+    public userRepo: UserRepo,
+    public kakaoOAuthService: KakaoOAuthService
   ) {}
 
-  async execute(dto: SocialLoginRequestDto) {
-    const { code, provider } = dto;
-
+  async execute(code: string) {
     // 외부 OAuth 프로필 정보 가져오기
-    const profile = await this.oauthService.getUserProfile(code);
-    const email = profile.email;
+    const profile = await this.kakaoOAuthService.getUserProfile(code);
+    const { email, nickname } = profile;
     if (!email) {
       throw new Error('이메일 정보 없음');
     }
 
     // provider ID 가져오기
-    const providerId = await this.userRepo.getProviderIdByProviderName(provider);
+    const providerId = await this.userRepo.getProviderIdByProviderName('kakao');
 
     // 유저 조회
     const existingUser = await this.userRepo.findByUserEmail(email);
@@ -35,8 +32,8 @@ export class SocialLoginUseCase {
     } else {
       const createdUser = await this.userRepo.create({
         email,
-        password: null,
-        nickname: null,
+        password: '',
+        nickname: nickname || null,
         phone_number: null,
         provider: providerId,
         deleted_at: null,
@@ -56,6 +53,7 @@ export class SocialLoginUseCase {
         email: userRecord.email,
         nickname: userRecord.nickname,
         phone_number: userRecord.phone_number,
+        provider: userRecord.provider,
       },
     };
 
