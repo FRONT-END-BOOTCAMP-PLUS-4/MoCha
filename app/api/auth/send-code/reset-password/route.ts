@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 
-import { SendCodeUseCase } from '@/application/usecases/auth/SendCodeUseCase';
+import { SendCodeRestPasswordUsecase } from '@/application/usecases/auth/SendCodeRestPasswordUsecase';
 import { supabase } from '@/app/shared/lib/supabase';
 
 export async function POST(req: NextRequest) {
@@ -13,13 +13,14 @@ export async function POST(req: NextRequest) {
     }
 
     // Supabase에서 해당 이메일이 존재하는지 확인
-    const { data: user } = await supabase.from('user').select('id').eq('email', email).single();
+    const { data: user } = await supabase.from('user').select('email').eq('email', email).single();
 
     if (!user) {
       throw new Error('존재하지 않는 계정입니다.');
     }
 
-    const usecase = new SendCodeUseCase();
+    const usecase = new SendCodeRestPasswordUsecase();
+
     const { token } = await usecase.execute(email);
 
     return NextResponse.json({ success: true, token }, { status: 200 });
