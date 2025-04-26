@@ -3,8 +3,8 @@ import { CategoryRepo } from '@/domain/repositories/CategoryRepo';
 
 type GETmonthlyCategoryProps = {
   userId: string;
-  start: string;
-  end: string;
+  startDate: string;
+  endDate: string;
 };
 
 type MonthlyCategoryItem = {
@@ -22,10 +22,10 @@ type GETmonthlyCategoryRetrun = {
 export class SbCategoryRepo implements CategoryRepo {
   async GETmonthlyCategory(
     props: GETmonthlyCategoryProps
-  ): Promise<GETmonthlyCategoryRetrun[] | []> {
-      const { userId, start, end } = props;
+  ): Promise<GETmonthlyCategoryRetrun | []> {
+      const { userId, startDate, endDate } = props;
       const { data, error } = await supabase
-      .rpc('get_category_monthly_list', { user_id:userId, start_date: start, end_date:end });
+      .rpc('get_category_monthly_list', { user_id:userId, start_date: startDate, end_date:endDate });
 
       if(error) throw new Error(error.message);
 
