@@ -19,7 +19,8 @@ export default function PeriodBarChart(props: PeriodProps): ReactElement {
     <ResponsiveContainer width={'100%'} height={'100%'}>
       <BarChart data={periodList}>
         <CartesianGrid strokeDasharray="3 3"/>
-        <XAxis dataKey="name" />
+        <XAxis dataKey="name"
+          interval="preserveStartEnd"/>
         <YAxis
           type="number"
           tickCount={5}
@@ -41,8 +42,8 @@ export default function PeriodBarChart(props: PeriodProps): ReactElement {
               boxShadow: '0 2px 4px rgba(0,0,0,0.2)',
               fontSize: "12px"
             }} formatter={(value)=> `${value.toLocaleString()}원`}/>
-        <Bar dataKey="income" name="수입" fill={`var(--color-income-pastel)`}/>
-        <Bar dataKey="expense" name="지출" fill={`var(--color-expense-pastel)`}/>
+        <Bar dataKey="income" name="수입" fill={`var(--color-income-pastel)`} barSize={18}/>
+        <Bar dataKey="expense" name="지출" fill={`var(--color-expense-pastel)`}barSize={18}/>
       </BarChart>
     </ResponsiveContainer>
   );
