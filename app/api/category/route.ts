@@ -13,7 +13,7 @@ export async function GET(req: NextRequest) {
 
     const sbCategoryRepo = new SbCategoryRepo();
     const getMonthlyCategoryUsecase = new GETmonthlyCategoryUsecase(sbCategoryRepo);
-    const data = await getMonthlyCategoryUsecase.excute(id, date);
+    const data = await getMonthlyCategoryUsecase.excute({userId:id, date});
 
     return NextResponse.json({ status: 200, data});
   } catch (error) {
