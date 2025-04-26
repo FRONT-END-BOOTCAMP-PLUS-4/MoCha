@@ -51,6 +51,11 @@ export type DailyTransaction = {
   transactions: DailyData[];
 };
 
+export type SummaryHeaderProps = {
+  totalIncome: number;
+  totalExpense: number;
+};
+
 export type CategoryIconProps = {
   name: Category;
   primaryColor: string;

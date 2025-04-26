@@ -47,7 +47,7 @@ export default function DailyDetailModal({
         </div>
 
         <div className="border-b-gray-3 border-b px-10 text-sm font-semibold">
-          {/* <SummaryHeader summary={{ totalIncome: income, totalExpense: expense }} /> */}
+          <SummaryHeader totalExpense={expense} totalIncome={income} />
         </div>
 
         <ul className="divide-gray-3 h-full divide-y overflow-y-auto">
