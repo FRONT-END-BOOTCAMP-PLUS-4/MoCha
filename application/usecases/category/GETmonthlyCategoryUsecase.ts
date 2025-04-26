@@ -14,7 +14,15 @@ export class GETmonthlyCategoryUsecase {
       const currentMmonths = currentDate.getMonth() + 1;
       const [year, months] = (date ?? `${currentYears}-${currentMmonths}`).split('-').map(Number);
       const start = `${year}-${months}-1`;
-      const end = `${year}-${months + 1}-1`;
+
+      let endYears = year;
+      let endMonth = months + 1;
+
+      if(endMonth > 12){
+        endYears += 1;
+        endMonth = 1;
+      }
+      const end = `${endYears}-${endMonth}-1`;
 
       const categoryRepo = await this.categoryRepo.GETmonthlyCategory({ userId, start, end });
 
