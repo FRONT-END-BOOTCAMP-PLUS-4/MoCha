@@ -20,7 +20,6 @@ export default function SummaryHeader({ yearMonth }: { yearMonth: string }) {
         }
 
         const data = await res.json();
-        console.log('Monthly data:', data);
         setMonthly(data.data);
       } catch (error) {
         console.error('Error fetching monthly summary:', error);

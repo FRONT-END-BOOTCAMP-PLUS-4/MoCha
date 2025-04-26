@@ -15,7 +15,7 @@ export async function GET(req: NextRequest) {
     const sbTransactionRepo = new SbTransactionRepo();
     const dailyDetailUsecase = new GetDailyDetailUsecase(sbTransactionRepo);
     const data = await dailyDetailUsecase.execute({ userId: id, date });
-    console.log('GET daily detail:', data);
+
     return NextResponse.json({ status: 200, data });
   } catch (err) {
     return NextResponse.json({ status: 401 });
