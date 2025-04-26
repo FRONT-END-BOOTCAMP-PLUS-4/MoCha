@@ -54,7 +54,7 @@ export default function GoogleLoginButton() {
   return (
     <button
       onClick={() => login()}
-      className="border-gray-3 flex justify-center gap-2 rounded-md border bg-white px-4 py-3 hover:cursor-pointer"
+      className="border-gray-3 flex h-12.5 justify-center gap-2 rounded-md border bg-white px-4 py-3 hover:cursor-pointer"
     >
       <Image src="/images/social/google-logo.svg" alt="구글 로그인" width={20} height={24} />
       <span>구글로 로그인하기</span>
