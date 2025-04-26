@@ -8,12 +8,12 @@ export async function GET(req: NextRequest) {
     const getHeaderToken = req.headers.get('authorization');
     if (!getHeaderToken) return NextResponse.json({ status: 401 });
     const access_token = getHeaderToken.replace('Bearer ', '');
-    const { id } = verifyAccessToken(access_token);
+    const { user:{ id } }  = verifyAccessToken(access_token);
     const date = req.nextUrl.searchParams.get('date');
 
     const sbCategoryRepo = new SbCategoryRepo();
     const getMonthlyCategoryUsecase = new GETmonthlyCategoryUsecase(sbCategoryRepo);
-    const data = await getMonthlyCategoryUsecase.excute(id, date);
+    const data = await getMonthlyCategoryUsecase.excute({userId:id, date});
 
     return NextResponse.json({ status: 200, data});
   } catch (error) {
