@@ -21,7 +21,7 @@ export async function GET(req: NextRequest) {
 
     return NextResponse.json({ status: 200, data});
   } catch (error) {
-    console.error("api/category/route.ts",error);
+    console.error(error);
     return NextResponse.json({ status: 500 });
   }
 }
