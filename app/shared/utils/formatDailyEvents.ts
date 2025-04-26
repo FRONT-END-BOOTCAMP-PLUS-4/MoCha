@@ -1,6 +1,6 @@
 import { CalendarEvent, DailyData } from '../types/Calendar';
 
-export function formatDailyEvents(daily: DailyData[]): CalendarEvent[] {
+export function formatDailyEvents(daily: DailyData[] = []): CalendarEvent[] {
   const grouped: { [date: string]: { income: number; expense: number } } = {};
 
   daily.forEach((item) => {
