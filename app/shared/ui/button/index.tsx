@@ -1,4 +1,5 @@
 import { cva, type VariantProps } from 'class-variance-authority';
+import { Loader2 } from 'lucide-react';
 import { ButtonHTMLAttributes, forwardRef } from 'react';
 import { cn } from '../../utils/cn';
 
@@ -31,18 +32,30 @@ const buttonVariants = cva('rounded-md py-1 px-2 cursor-pointer text-center font
 
 type ButtonProps = ButtonHTMLAttributes<HTMLButtonElement> &
   VariantProps<typeof buttonVariants> & {
+    isLoading?: boolean;
+    loadingText?: string;
     className?: string;
   };
 
 const Button = forwardRef<HTMLButtonElement, ButtonProps>(
-  ({ className, intent, size, disabled, ...props }, ref) => {
+  ({ className, intent, size, disabled, isLoading, loadingText, children, ...props }, ref) => {
+    const isDisabled = disabled || isLoading;
+
     return (
       <button
         ref={ref}
-        className={cn(buttonVariants({ intent, size, disabled, className }))}
-        disabled={disabled}
+        className={cn(buttonVariants({ intent, size, disabled: isDisabled }), className)}
+        disabled={isDisabled}
         {...props}
-      />
+      >
+        {isLoading && (
+          <div className="flex items-center justify-center gap-2">
+            <Loader2 className="h-4 w-4 animate-spin" />
+            <p>{loadingText}</p>
+          </div>
+        )}
+        {!isLoading && children}
+      </button>
     );
   }
 );

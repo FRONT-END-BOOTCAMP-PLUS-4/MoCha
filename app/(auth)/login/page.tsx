@@ -134,6 +134,7 @@ export default function LoginPage() {
             className="w-full"
             error={['invalid', 'error'].includes(status.email ?? '')}
             autoComplete="email"
+            maxLength={20}
           />
           <MessageZone
             errorMessages={

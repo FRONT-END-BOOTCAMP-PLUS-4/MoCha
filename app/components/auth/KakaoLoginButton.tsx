@@ -10,7 +10,7 @@ export default function KakaoLoginButton() {
   return (
     <button
       onClick={handleKakaoLogin}
-      className="flex justify-center gap-2 rounded-md bg-[#FEE500] px-4 py-3 hover:cursor-pointer"
+      className="flex h-12.5 justify-center gap-2 rounded-md bg-[#FEE500] px-4 py-3 hover:cursor-pointer"
     >
       <Image
         src="/images/social/kakao-logo.svg"

@@ -1,23 +1,24 @@
 'use client';
 
-import { doPasswordsMatch, isValidEmail, isValidPassword } from '@/app/shared/consts/validation';
 import { ChangeEvent, useState } from 'react';
+import { doPasswordsMatch, isValidEmail, isValidPassword } from '@/app/shared/consts/validation';
 
+import { Button } from '@/app/shared/ui/button';
+import { FieldStatus } from '@/app/shared/types/FormStatus';
+import Input from '@/app/shared/ui/input';
+import Label from '@/app/shared/ui/label';
 import LogoImage from '@/app/components/auth/LogoImage';
 import MessageZone from '@/app/components/auth/MessageZone';
+import PasswordInput from '@/app/shared/ui/input/PasswordInput';
 import Title from '@/app/components/auth/Title';
 import { getFieldMessage } from '@/app/shared/consts/errorMessages';
 import useIsHide from '@/app/shared/hooks/useIsHide';
-import { FieldStatus } from '@/app/shared/types/FormStatus';
-import { Button } from '@/app/shared/ui/button';
-import Input from '@/app/shared/ui/input';
-import PasswordInput from '@/app/shared/ui/input/PasswordInput';
-import Label from '@/app/shared/ui/label';
 import { useRouter } from 'next/navigation';
 
 export default function FindPasswordPage() {
   const router = useRouter();
   const { isHide, onToggle } = useIsHide();
+  const [sending, setSending] = useState(false);
 
   // 통합된 입력 상태
   const [form, setForm] = useState({
@@ -63,10 +64,13 @@ export default function FindPasswordPage() {
   };
 
   const handleSendVerificationCode = async () => {
+    if (sending) return;
     if (!isValidEmail(form.email)) {
       setStatus((prev) => ({ ...prev, email: 'invalid' }));
       return;
     }
+
+    setSending(true);
 
     try {
       const res = await fetch('/api/auth/send-code/reset-password', {
@@ -92,6 +96,8 @@ export default function FindPasswordPage() {
     } catch (err) {
       console.error('인증 요청 실패:', err);
       setStatus((prev) => ({ ...prev, email: 'error' }));
+    } finally {
+      setSending(false);
     }
   };
 
@@ -185,9 +191,12 @@ export default function FindPasswordPage() {
         />
         <Button
           intent="primary"
-          className="mt-2 w-full"
+          type="button"
+          className="mt-1 w-full"
           onClick={handleSendVerificationCode}
-          disabled={isVerified || !isValidEmail(form.email)}
+          disabled={isVerified || status.email !== 'valid' || status.code === 'success'}
+          isLoading={sending}
+          loadingText="전송중..."
         >
           인증번호 발송
         </Button>
@@ -216,7 +225,7 @@ export default function FindPasswordPage() {
         />
         <Button
           intent="primary"
-          className="mt-2 w-full"
+          className="mt-1 w-full"
           onClick={handleVerifyCode}
           disabled={isVerified}
         >
@@ -244,6 +253,7 @@ export default function FindPasswordPage() {
               isHide={isHide}
               onToggle={onToggle}
               autoComplete="new-password"
+              maxLength={20}
             />
             <MessageZone
               errorMessages={
@@ -265,6 +275,7 @@ export default function FindPasswordPage() {
               isHide={isHide}
               onToggle={onToggle}
               autoComplete="new-password"
+              maxLength={20}
             />
             <MessageZone
               errorMessages={
