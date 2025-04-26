@@ -17,11 +17,19 @@ export type Category =
   | '기타';
 
 export type Transaction = {
-  id: string;
-  category: Category;
-  memo?: string;
+  id: number;
+  user_id: string;
+  category_id: number;
+  date: string;
   amount: number;
+  memo?: string;
   is_expense: boolean;
+  category: {
+    id: number;
+    name: Category;
+    primary_color: string;
+    secondary_color: string;
+  };
 };
 
 export type DailyDetailModalProps = {
@@ -41,6 +49,12 @@ export type DailyTransaction = {
   income: number;
   expense: number;
   transactions: DailyData[];
+};
+
+export type CategoryIconProps = {
+  name: Category;
+  primaryColor: string;
+  secondaryColor: string;
 };
 
 export interface CalendarEvent {
