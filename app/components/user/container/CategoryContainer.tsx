@@ -1,6 +1,6 @@
 'use client';
 // package
-import { useEffect, useState } from 'react';
+import { useEffect, useState, ReactElement } from 'react';
 import { useRouter } from 'next/navigation';
 // slice
 import Category from '../presentation/Category';
