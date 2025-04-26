@@ -20,10 +20,13 @@ export async function POST(req: NextRequest) {
 
     // 2) UseCase 실행
     const usecase = new GoogleLoginUseCase(userRepo, oauthService);
-    const { token, isNew } = await usecase.execute(googleToken);
+    const { access_token, refresh_token, isNew } = await usecase.execute(googleToken);
 
     // 3) 결과 반환
-    return NextResponse.json({ success: true, token, isNew }, { status: 200 });
+    return NextResponse.json(
+      { success: true, access_token, refresh_token, isNew },
+      { status: 200 }
+    );
   } catch (err: unknown) {
     const message = err instanceof Error ? err.message : '알 수 없는 오류가 발생했습니다.';
     console.error('[Google Login Error]', message);
