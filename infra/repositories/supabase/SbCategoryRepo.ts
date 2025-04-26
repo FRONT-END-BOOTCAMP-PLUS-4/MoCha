@@ -7,27 +7,28 @@ type GETmonthlyCategoryProps = {
   end: string;
 };
 
-type GETmonthlyCategoryRetrun = {
+type MonthlyCategoryItem = {
   is_expense: boolean;
   amount: number;
-  category: { name: string; primary_color: string }[];
+  name: string;
+  primary_color: string;
+};
+
+type GETmonthlyCategoryRetrun = {
+  incomes: MonthlyCategoryItem[];
+  expenses: MonthlyCategoryItem[];
 };
 
 export class SbCategoryRepo implements CategoryRepo {
-  async GETmonthlyCategory(props: GETmonthlyCategoryProps): Promise<GETmonthlyCategoryRetrun[] | []> {
-    try {
+  async GETmonthlyCategory(
+    props: GETmonthlyCategoryProps
+  ): Promise<GETmonthlyCategoryRetrun[] | []> {
       const { userId, start, end } = props;
       const { data, error } = await supabase
-        .from('transaction')
-        .select(`amount, is_expense, category(name, primary_color)`)
-        .eq('user_id', userId)
-        .gte('date', start)
-        .lte('date', end);
+      .rpc('get_category_monthly_list', { user_id:userId, start_date: start, end_date:end });
+
+      if(error) throw new Error(error.message);
 
       return data ?? [];
-    } catch (error) {
-      console.error('GETmonthlyCategory:', error);
-      return [];
-    }
   }
 }
