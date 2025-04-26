@@ -1,11 +1,13 @@
-import { CategoryRepo } from '@/domain/repositories/CategoryRepo';
+// slice
 import { MonthlyCategoryRequest, MonthlyCategoryResponse } from './dto/MonthlyCategoryDto';
+// layer
+import { CategoryRepo } from '@/domain/repositories/CategoryRepo';
 
 
 export class GETmonthlyCategoryUsecase {
   constructor(private readonly categoryRepo: CategoryRepo) {}
 
-  async excute(props: MonthlyCategoryRequest): Promise<MonthlyCategoryResponse[] | []> {
+  async excute(props: MonthlyCategoryRequest): Promise<MonthlyCategoryResponse | []> {
     try {
   
       const {userId , date} = props;
