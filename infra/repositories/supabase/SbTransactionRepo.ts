@@ -1,6 +1,5 @@
 import { TransactionRepo } from '@/domain/repositories/TransactionRepo';
 import { supabase } from '@/app/shared/lib/supabase';
-import { addDays } from 'date-fns';
 
 export class SbTransactionRepo implements TransactionRepo {
   async GETmonthlySummary(
@@ -59,16 +58,23 @@ export class SbTransactionRepo implements TransactionRepo {
     | []
   > {
     try {
-      const startDate = new Date(date);
-      const endDate = addDays(startDate, 1);
-
       const { data, error } = await supabase
         .from('transaction')
-        .select(`id, user_id, category_id, date, amount, memo, is_expense`)
+        .select(
+          `
+          *,
+          category:category_id (
+            id,
+            name,
+            primary_color,
+            secondary_color
+          )
+        `
+        )
         .eq('user_id', userId)
-        .gte('date', startDate.toISOString()) // 날짜 >= 2025-04-01T00:00:00
-        .lt('date', endDate.toISOString()); // 날짜 < 2025-04-02T00:00:00
-      console.log('data:', data);
+        .gte('date', `${date}T00:00:00`) // 하루 시작
+        .lte('date', `${date}T23:59:59`); // 하루 끝까지
+
       return data ? data : [];
     } catch (error) {
       console.error('error:', error);
