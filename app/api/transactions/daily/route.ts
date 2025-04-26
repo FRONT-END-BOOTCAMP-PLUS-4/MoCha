@@ -4,9 +4,6 @@ import { GetdailySummaryUsecase } from '@/application/usecases/transactions/GetD
 import { SbTransactionRepo } from '@/infra/repositories/supabase/SbTransactionRepo';
 import { verifyAccessToken } from '@/infra/utils/jwt';
 
-// 임시작업
-
-
 export async function GET(req: NextRequest) {
   try {
     const access_token = req.headers.get('authorization')?.replace('Bearer ', '');

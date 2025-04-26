@@ -38,6 +38,12 @@ export type DailyData = {
   date: string;
 };
 
+export type DailyTransaction = {
+  income: number;
+  expense: number;
+  transactions: DailyData[];
+};
+
 export interface CalendarEvent {
   id: string;
   title: string;
