@@ -1,6 +1,4 @@
-import { OAuthService } from '@/domain/services/OAuthService';
-
-export class KakaoOAuthService implements OAuthService {
+export class KakaoOAuthService {
   async getUserProfile(code: string) {
     const tokenRes = await fetch('https://kauth.kakao.com/oauth/token', {
       method: 'POST',
@@ -13,7 +11,6 @@ export class KakaoOAuthService implements OAuthService {
       }),
     });
     const tokenData = await tokenRes.json();
-    console.log('tokenData: ', tokenData);
     const accessToken = tokenData.access_token;
 
     const profileRes = await fetch('https://kapi.kakao.com/v2/user/me', {
