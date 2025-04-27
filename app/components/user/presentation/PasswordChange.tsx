@@ -39,7 +39,6 @@ export default function PasswordChange(props: PasswordChangeProps) {
   const [isHide, setIsHide] = useState(false);
   const toggleHide = () => setIsHide(!isHide);
 
-  console.log(checkPassword);
   return (
     <div className="flex flex-col gap-3 text-base">
       <label className="text-gray-4">변경할 비밀번호</label>
