@@ -8,7 +8,9 @@ type GETmonthlySummaryProps = {
 };
 
 export class SbTransactionRepo implements TransactionRepo {
-  async GETmonthlySummary(props: GETmonthlySummaryProps): Promise<Array<{ amount: number; is_expense: Boolean; date: string }> | []> {
+  async GETmonthlySummary(
+    props: GETmonthlySummaryProps
+  ): Promise<Array<{ amount: number; is_expense: Boolean; date: string }> | []> {
     const { userId, startDate, endDate } = props;
     const { data, error } = await supabase
       .from('transaction')
@@ -18,7 +20,7 @@ export class SbTransactionRepo implements TransactionRepo {
       .lte('date', endDate)
       .order('date', { ascending: true });
 
-    if(error) throw new Error(error.message);
+    if (error) throw new Error(error.message);
 
     return data ?? [];
   }
@@ -81,5 +83,33 @@ export class SbTransactionRepo implements TransactionRepo {
       console.error('error:', error);
       return [];
     }
+  }
+
+  async POSTtransaction(props: {
+    userId: string;
+    categoryId: string;
+    date: string;
+    amount: number;
+    memo?: string | null;
+    isExpense: boolean;
+  }): Promise<{ id: number } | []> {
+    const { userId, categoryId, date, amount, memo, isExpense } = props;
+
+    const { data, error } = await supabase
+      .from('transaction')
+      .insert({
+        user_id: userId,
+        category_id: categoryId,
+        date,
+        amount,
+        memo,
+        is_expense: isExpense,
+      })
+      .select('id')
+      .single();
+
+    if (error) throw new Error(error.message);
+
+    return data ? { id: data.id } : [];
   }
 }
