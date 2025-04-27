@@ -6,6 +6,7 @@ import { verifyAccessToken } from '@/infra/utils/jwt';
 import { SbUserRepo } from '@/infra/repositories/supabase/SbUserRepo';
 import { ValidationError } from '@/domain/error';
 import { MatchPasswordUsecase } from '@/application/usecases/user/MatchPasswordUsecase';
+import { ChangePasswordUsecase } from '@/application/usecases/user/ChangePasswordUsecase';
 
 
 export async function PUT(req: NextRequest) {
@@ -20,10 +21,12 @@ export async function PUT(req: NextRequest) {
 
     const { password } = await req.json();
 
+    const sbUserRepo = new SbUserRepo();
+    const changePasswordUsecase = new ChangePasswordUsecase(sbUserRepo);
+    const data = changePasswordUsecase.execute(user.email, password);
 
 
-
-    return NextResponse.json({ success: true, message: '비밀번호가 변경되었습니다.' });
+    return NextResponse.json({status: 200, data});
   } catch (error) {
     
     if( error instanceof Error){

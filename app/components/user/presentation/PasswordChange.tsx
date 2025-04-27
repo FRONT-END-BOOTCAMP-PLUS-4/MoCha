@@ -1,4 +1,4 @@
-import { useState, useRef, type ChangeEvent } from 'react';
+import { useState, type ChangeEvent, RefObject } from 'react';
 import { Eye } from 'lucide-react';
 import { isValidPassword } from '@/app/shared/consts/validation';
 import { Button } from '@/app/shared/ui/button/index';
@@ -6,16 +6,17 @@ import { cn } from '@/app/shared/utils/cn';
 
 type PasswordChangeProps = {
   closeModal: () => void;
-  changeProcess: () => void;
+  passwordRef: RefObject<HTMLInputElement | null>;
+  checkPasswordRef: RefObject<HTMLInputElement | null>;
+  submitPassword: () => void;
 } & {};
 
 export default function PasswordChange(props: PasswordChangeProps) {
-  const { closeModal, changeProcess } = props;
+  const { closeModal, submitPassword, passwordRef, checkPasswordRef } = props;
 
-  const passwordRef = useRef<HTMLInputElement>(null);
   const [passwordValidation, setPasswordValidation] = useState(false);
 
-  const checkPasswordRef = useRef<HTMLInputElement>(null);
+
   const [checkPassword, setCheckPassword] = useState(false);
 
   const checkValidation = (event: ChangeEvent<HTMLInputElement>) => {
@@ -81,7 +82,7 @@ export default function PasswordChange(props: PasswordChangeProps) {
             'cursor-pointer': passwordValidation,
           })}
           disabled={passwordValidation ? false : true}
-          onClick={changeProcess}
+          onClick={submitPassword}
         >
           변경하기
         </Button>

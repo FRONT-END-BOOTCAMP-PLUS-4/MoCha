@@ -46,7 +46,8 @@ export default function PasswordContainer() {
 
     switch (fetchData.status) {
       case 200:
-        if(fetchData.data) nextProcess()
+        if(fetchData.data) return nextProcess();
+        alert("비밀번호가 일치하지 않습니다.")
         break;
       case 400:
         // 임시
