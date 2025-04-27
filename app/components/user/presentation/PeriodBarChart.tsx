@@ -1,8 +1,10 @@
 'use client';
+// package
 import { type ReactElement } from 'react';
 import dynamic from 'next/dynamic';
 import { BarChart, CartesianGrid, XAxis, YAxis, Tooltip, Legend, Bar } from 'recharts';
-import { type PeriodProps } from '@/app/shared/types/Chart';
+// slice
+import { type PeriodItem} from '../container/PeriodBarChartContainer'
 
 const ResponsiveContainer = dynamic(
   () => import('recharts').then((comp) => comp.ResponsiveContainer),
@@ -12,14 +14,14 @@ const ResponsiveContainer = dynamic(
   }
 );
 
-export default function PeriodBarChart(props: PeriodProps): ReactElement {
+export default function PeriodBarChart(props: {periodList:PeriodItem[]}): ReactElement {
   const { periodList } = props;
 
   return (
     <ResponsiveContainer width={'100%'} height={'100%'}>
       <BarChart data={periodList}>
         <CartesianGrid strokeDasharray="3 3"/>
-        <XAxis dataKey="name"
+        <XAxis dataKey="date"
           interval="preserveStartEnd"/>
         <YAxis
           type="number"
@@ -42,8 +44,8 @@ export default function PeriodBarChart(props: PeriodProps): ReactElement {
               boxShadow: '0 2px 4px rgba(0,0,0,0.2)',
               fontSize: "12px"
             }} formatter={(value)=> `${value.toLocaleString()}원`}/>
-        <Bar dataKey="income" name="수입" fill={`var(--color-income-pastel)`} barSize={18}/>
-        <Bar dataKey="expense" name="지출" fill={`var(--color-expense-pastel)`}barSize={18}/>
+        <Bar dataKey="incomes" name="수입" fill={`var(--color-income-pastel)`} barSize={18}/>
+        <Bar dataKey="expenses" name="지출" fill={`var(--color-expense-pastel)`}barSize={18}/>
       </BarChart>
     </ResponsiveContainer>
   );
