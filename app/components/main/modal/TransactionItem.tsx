@@ -2,6 +2,7 @@
 
 import { Transaction } from '@/app/shared/types/Calendar';
 import CategoryIcon from './CategoryIcon';
+import { Trash2 } from 'lucide-react';
 
 export default function TransactionItem({ item }: { item: Transaction }) {
   return (
@@ -17,10 +18,15 @@ export default function TransactionItem({ item }: { item: Transaction }) {
           {item.memo && <p className="text-sm text-gray-500">{item.memo}</p>}
         </div>
       </div>
-      <p className={`font-semibold ${item.is_expense ? 'text-expense' : 'text-income'}`}>
-        {item.is_expense ? '-' : '+'}
-        {item.amount.toLocaleString()}
-      </p>
+      <div className="flex flex-col">
+        <button>
+          <Trash2 className="ml-auto" size={14} />
+        </button>
+        <p className={`font-semibold ${item.is_expense ? 'text-expense' : 'text-income'}`}>
+          {item.is_expense ? '-' : '+'}
+          {item.amount.toLocaleString()}
+        </p>
+      </div>{' '}
     </li>
   );
 }
