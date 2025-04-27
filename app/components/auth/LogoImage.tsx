@@ -1,11 +1,13 @@
 'use client';
 
 import Image from 'next/image';
+import Link from 'next/link';
 
 export default function LogoImage() {
   return (
-    <div className="flex justify-center">
-      <Image src="/images/mocha_logo.svg" alt="Mocha_logo" width={120} height={80} priority />
-    </div>
+    <Link href="/" className="flex items-center justify-center hover:cursor-pointer">
+      <div className="text-2xl font-bold">MoCha</div>
+      <Image src="/images/mocha-logo.png" alt="Mocha_logo" width={50} height={50} priority />
+    </Link>
   );
 }
