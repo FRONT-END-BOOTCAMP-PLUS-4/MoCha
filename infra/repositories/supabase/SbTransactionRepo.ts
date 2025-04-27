@@ -112,4 +112,17 @@ export class SbTransactionRepo implements TransactionRepo {
 
     return data ? { id: data.id } : [];
   }
+
+  async DELETEtransaction(id: string): Promise<{ id: number } | []> {
+    const { data, error } = await supabase
+      .from('transaction')
+      .delete()
+      .eq('id', id)
+      .select('id')
+      .single();
+
+    if (error) throw new Error(error.message);
+
+    return data ? { id: data.id } : [];
+  }
 }
