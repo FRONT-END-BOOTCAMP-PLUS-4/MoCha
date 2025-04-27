@@ -28,7 +28,7 @@ export default function IncomeExpenseForm({ onClose }: IncomeExpenseFormProps) {
   const isFormValid = date !== '' && category !== '' && amount !== '';
 
   // 저장 버튼 클릭 핸들러
-  const handleSave = () => {
+  const handleSave = async () => {
     const formData = {
       type: selectedTab,
       date,
@@ -37,11 +37,28 @@ export default function IncomeExpenseForm({ onClose }: IncomeExpenseFormProps) {
       memo,
     };
 
-    // 입력값을 임시로 콘솔에 출력
-    console.log('저장된 데이터:', formData);
+    try {
+      const res = await fetch('/api/transactions', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${localStorage.getItem('access_token')}`,
+        },
+        body: JSON.stringify({ ...formData, amount: Number(formData.amount) }),
+      });
 
-    // 모달 닫기
-    onClose();
+      if (!res.ok) {
+        throw new Error('Failed to save transaction');
+      }
+
+      const data = await res.json();
+      console.log('저장된 데이터:', data);
+
+      onClose(); // 성공하면 모달 닫기
+    } catch (error) {
+      console.error('저장 실패:', error);
+      alert('저장에 실패했습니다. 다시 시도해주세요!');
+    }
   };
 
   useEffect(() => {

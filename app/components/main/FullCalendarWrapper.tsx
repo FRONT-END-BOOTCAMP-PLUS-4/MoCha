@@ -11,8 +11,10 @@ import { formatDailyEvents } from '@/app/shared/utils/formatDailyEvents';
 
 export default function FullCalendarWrapper({
   onYearMonthChange,
+  refetchSignal,
 }: {
   onYearMonthChange: (value: string) => void;
+  refetchSignal: boolean;
 }) {
   const [selectedDate, setSelectedDate] = useState<string | null>(null);
   const [selectedDetail, setSelectedDetail] = useState<DailyTransaction | null>(null);
@@ -65,16 +67,33 @@ export default function FullCalendarWrapper({
 
   const events = useMemo(() => formatDailyEvents(daily), [daily]);
 
+  const fetchDailyData = async () => {
+    if (!yearMonth) return;
+    const token = localStorage.getItem('access_token');
+    if (!token) return;
+
+    try {
+      const res = await fetch(`/api/transactions/daily?start=${yearMonth}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      const data = await res.json();
+      setDaily(data.data);
+    } catch (error) {
+      console.error('Error fetching daily data:', error);
+    }
+  };
+
   useEffect(() => {
     if (!yearMonth) return;
-
     onYearMonthChange(yearMonth);
-    fetch(`/api/transactions/daily?start=${yearMonth}`, {
-      headers: { Authorization: `Bearer ${localStorage.getItem('access_token')}` },
-    })
-      .then((res) => res.json())
-      .then((res) => setDaily(res.data));
+    fetchDailyData();
   }, [yearMonth]);
+
+  useEffect(() => {
+    if (refetchSignal) {
+      fetchDailyData();
+    }
+  }, [refetchSignal]);
 
   return (
     <>
