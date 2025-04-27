@@ -14,15 +14,15 @@ export async function GET(req: NextRequest) {
     const access_token = getHeaderToken.replace('Bearer ', '');
     const { user } = verifyAccessToken(access_token);
     // data
-    const startDate = req.nextUrl.searchParams.get('start');
-    const endDate = req.nextUrl.searchParams.get('end');
+    const startDate = req.nextUrl.searchParams.get('startDate');
+    const endDate = req.nextUrl.searchParams.get('endDate');
     const sbTransactionRepo = new SbTransactionRepo();
     const monthlySummaryUsecase = new GetMonthlySummaryUsecase(sbTransactionRepo);
     const data = await monthlySummaryUsecase.execute({ userId: user.id, startDate, endDate });
 
     return NextResponse.json({ status: 200, data });
   } catch (error) {
-    console.error("api/transactions/monthly/route.ts",error);
-    return NextResponse.json({ status: 401 });
+    console.error(error);
+    return NextResponse.json({ status: 500 });
   }
 }
