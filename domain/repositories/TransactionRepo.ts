@@ -26,4 +26,13 @@ export interface TransactionRepo {
       }[]
     | []
   >;
+
+  POSTtransaction(props: {
+    userId: string;
+    categoryId: string;
+    date: string;
+    amount: number;
+    memo?: string | null;
+    isExpense: boolean;
+  }): Promise<{ id: number } | []>;
 }

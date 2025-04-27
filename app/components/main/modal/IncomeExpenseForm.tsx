@@ -3,20 +3,32 @@
 import { IncomeExpenseFormProps } from '@/app/shared/types/Calendar';
 import { Button } from '@/app/shared/ui/button';
 import Input from '@/app/shared/ui/input';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 export default function IncomeExpenseForm({ onClose }: IncomeExpenseFormProps) {
   const [selectedTab, setSelectedTab] = useState<'income' | 'expense'>('income');
   const [date, setDate] = useState<string>('');
-  const [category, setCategory] = useState<string>('');
+  const [categories, setCategories] = useState<{
+    expense: { id: number; name: string }[];
+    income: { id: number; name: string }[];
+  }>({
+    expense: [],
+    income: [],
+  });
+  const [category, setCategory] = useState<string>(''); // 선택된 카테고리 ID
   const [amount, setAmount] = useState<string>('');
   const [memo, setMemo] = useState<string>('');
+
+  const handleTabChange = (tab: 'income' | 'expense') => {
+    setSelectedTab(tab);
+    setCategory(''); // 탭 변경 시 선택 초기화
+  };
 
   // 모든 필수값이 입력되었는지 확인
   const isFormValid = date !== '' && category !== '' && amount !== '';
 
   // 저장 버튼 클릭 핸들러
-  const handleSave = () => {
+  const handleSave = async () => {
     const formData = {
       type: selectedTab,
       date,
@@ -25,12 +37,40 @@ export default function IncomeExpenseForm({ onClose }: IncomeExpenseFormProps) {
       memo,
     };
 
-    // 입력값을 임시로 콘솔에 출력
-    console.log('저장된 데이터:', formData);
+    try {
+      const res = await fetch('/api/transactions', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${localStorage.getItem('access_token')}`,
+        },
+        body: JSON.stringify({ ...formData, amount: Number(formData.amount) }),
+      });
 
-    // 모달 닫기
-    onClose();
+      if (!res.ok) {
+        throw new Error('Failed to save transaction');
+      }
+
+      const data = await res.json();
+      console.log('저장된 데이터:', data);
+
+      onClose(); // 성공하면 모달 닫기
+    } catch (error) {
+      console.error('저장 실패:', error);
+      alert('저장에 실패했습니다. 다시 시도해주세요!');
+    }
   };
+
+  useEffect(() => {
+    (async () => {
+      const res = await fetch(`/api/category`, {
+        headers: { Authorization: `Bearer ${localStorage.getItem('access_token')}` },
+      });
+
+      const response = await res.json();
+      setCategories(response.data);
+    })();
+  }, [date]);
 
   return (
     <div className="flex flex-col gap-4">
@@ -39,14 +79,14 @@ export default function IncomeExpenseForm({ onClose }: IncomeExpenseFormProps) {
         <Button
           intent={selectedTab === 'income' ? 'income' : 'ghost'}
           className="flex-1"
-          onClick={() => setSelectedTab('income')}
+          onClick={() => handleTabChange('income')}
         >
           수입
         </Button>
         <Button
           intent={selectedTab === 'expense' ? 'expense' : 'ghost'}
           className="flex-1"
-          onClick={() => setSelectedTab('expense')}
+          onClick={() => handleTabChange('expense')}
         >
           지출
         </Button>
@@ -70,10 +110,13 @@ export default function IncomeExpenseForm({ onClose }: IncomeExpenseFormProps) {
           value={category}
           onChange={(e) => setCategory(e.target.value)}
         >
-          <option>선택하세요</option>
-          <option value="food">식비</option>
-          <option value="transport">교통</option>
-          {/* 필요에 따라 추가 */}
+          <option value="">선택하세요</option>
+
+          {(selectedTab === 'income' ? categories.income : categories.expense)?.map((item) => (
+            <option key={item.id} value={String(item.id)}>
+              {item.name}
+            </option>
+          ))}
         </select>
       </div>
 

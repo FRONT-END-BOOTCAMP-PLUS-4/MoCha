@@ -12,16 +12,16 @@ export async function GET(req: NextRequest) {
     // token 확인영역
     if (!getHeaderToken) return NextResponse.json({ status: 401 });
     const access_token = getHeaderToken.replace('Bearer ', '');
-    const { user }  = verifyAccessToken(access_token);
+    const { user } = verifyAccessToken(access_token);
     // data
     const date = req.nextUrl.searchParams.get('date');
     const sbCategoryRepo = new SbCategoryRepo();
     const getMonthlyCategoryUsecase = new GETmonthlyCategoryUsecase(sbCategoryRepo);
-    const data = await getMonthlyCategoryUsecase.excute({userId:user.id, date});
+    const data = await getMonthlyCategoryUsecase.excute({ userId: user.id, date });
 
-    return NextResponse.json({ status: 200, data});
+    return NextResponse.json({ status: 200, data });
   } catch (error) {
-    console.error("error:",error);
+    console.error('error:', error);
     return NextResponse.json({ status: 500 });
   }
 }

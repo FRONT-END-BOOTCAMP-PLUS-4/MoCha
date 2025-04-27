@@ -15,43 +15,55 @@ export default function Home() {
     expenses: 0,
     incomes: 0,
   });
+  const [refetchCalendar, setRefetchCalendar] = useState(false);
+
+  const fetchMonthly = async () => {
+    const token = localStorage.getItem('access_token');
+    if (!token) {
+      console.warn('No access token found. Skipping fetch.');
+      return;
+    }
+
+    try {
+      const res = await fetch(`/api/transactions/monthly?start=${yearMonth}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+
+      if (!res.ok) {
+        throw new Error('Failed to fetch monthly data');
+      }
+
+      const data = await res.json();
+      setMonthly(data.data[0]);
+    } catch (error) {
+      console.error('Error fetching monthly summary:', error);
+      // 필요하면 setMonthly({ totalIncome: 0, totalExpense: 0 }) 초기화도 가능
+    }
+  };
 
   useEffect(() => {
-    const fetchMonthly = async () => {
-      const token = localStorage.getItem('access_token');
-      if (!token) {
-        console.warn('No access token found. Skipping fetch.');
-        return;
-      }
-
-      try {
-        const res = await fetch(`/api/transactions/monthly?start=${yearMonth}`, {
-          headers: { Authorization: `Bearer ${token}` },
-        });
-
-        if (!res.ok) {
-          throw new Error('Failed to fetch monthly data');
-        }
-
-        const data = await res.json();
-        setMonthly(data.data[0]);
-      } catch (error) {
-        console.error('Error fetching monthly summary:', error);
-        // 필요하면 setMonthly({ totalIncome: 0, totalExpense: 0 }) 초기화도 가능
-      }
-    };
-
     fetchMonthly();
   }, [yearMonth]);
+
+  useEffect(() => {
+    if (refetchCalendar) {
+      fetchMonthly();
+    }
+  }, [refetchCalendar]);
 
   return (
     <div>
       <SummaryHeader totalExpense={monthly.expenses} totalIncome={monthly.incomes} />
-      <FullCalendarWrapper onYearMonthChange={setYearMonth} />
+      <FullCalendarWrapper onYearMonthChange={setYearMonth} refetchSignal={refetchCalendar} />
       <FloatingButton onClick={() => setIsModalOpen(true)} />
 
       <Modal isOpen={isModalOpen}>
-        <IncomeExpenseForm onClose={() => setIsModalOpen(false)} />
+        <IncomeExpenseForm
+          onClose={() => {
+            setIsModalOpen(false);
+            setRefetchCalendar((prev) => !prev);
+          }}
+        />
       </Modal>
     </div>
   );
