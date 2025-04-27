@@ -10,6 +10,7 @@ export default function AuthLayout({ children }: { children: ReactNode }) {
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
+    // access_token 이름으로 아무 값 넣어도 작동됨, 추후에 수정해야함
     const token = localStorage.getItem('access_token');
     if (token) {
       router.push('/');
