@@ -135,6 +135,7 @@ export default function FullCalendarWrapper({
             document.body.style.overflow = 'auto';
             setSelectedDate(null);
             setSelectedDetail(null);
+            window.location.reload();
           }}
         />
       )}
