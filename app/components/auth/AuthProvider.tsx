@@ -5,7 +5,7 @@ import { useAuthStore } from '@/app/shared/stores/authStore';
 import { useEffect } from 'react';
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
-  const { user, setUser, setAccessToken, clearAuth } = useAuthStore.getState();
+  const { user, accessToken, setUser, setAccessToken, clearAuth } = useAuthStore.getState();
 
   useEffect(() => {
     async function initAuth() {
@@ -28,6 +28,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           return;
         }
         access = newToken;
+        localStorage.setItem('access_token', access);
         // 재시도
         res = await fetch('/api/user', {
           headers: { Authorization: `Bearer ${access}` },
@@ -62,7 +63,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
 
     initAuth();
-  }, []);
+  }, [accessToken]);
 
   return <>{children}</>;
 }
