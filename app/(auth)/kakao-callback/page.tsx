@@ -22,7 +22,7 @@ export default function KakaoCallbackPage() {
 
     (async () => {
       try {
-        const res = await fetch('/api/auth/kakao/exchange', {
+        const res = await fetch('/api/auth/kakao', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ code }),
