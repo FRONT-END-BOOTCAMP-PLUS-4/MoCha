@@ -1,8 +1,7 @@
-import { NextRequest, NextResponse } from 'next/server';
-
-import { GetdailySummaryUsecase } from '@/application/usecases/transactions/GetDailySummaryUsecase';
+import { GetDailyDetailUsecase } from '@/application/usecases/transactions/GetDailyDetailUsecase';
 import { SbTransactionRepo } from '@/infra/repositories/supabase/SbTransactionRepo';
 import { verifyAccessToken } from '@/infra/utils/jwt';
+import { NextRequest, NextResponse } from 'next/server';
 
 export async function GET(req: NextRequest) {
   try {
@@ -12,10 +11,10 @@ export async function GET(req: NextRequest) {
     }
     const { user } = verifyAccessToken(access_token);
     const id = user.id;
-    const startDate = req.nextUrl.searchParams.get('start');
+    const date = req.nextUrl.searchParams.get('date');
     const sbTransactionRepo = new SbTransactionRepo();
-    const dailySummaryUsecase = new GetdailySummaryUsecase(sbTransactionRepo);
-    const data = await dailySummaryUsecase.execute({ userId: id, yearMonth: startDate });
+    const dailyDetailUsecase = new GetDailyDetailUsecase(sbTransactionRepo);
+    const data = await dailyDetailUsecase.execute({ userId: id, date });
 
     return NextResponse.json({ status: 200, data });
   } catch (err) {

@@ -1,7 +1,8 @@
+import { generateAccessToken, generateRefreshToken } from '@/infra/utils/jwt';
+
 import { LoginRequestDto } from './dto/LoginDto';
 import { UserRepo } from '@/domain/repositories/UserRepo';
 import bcrypt from 'bcryptjs';
-import { generateAccessToken } from '@/infra/utils/jwt';
 
 export class LoginUseCase {
   constructor(private readonly userRepo: UserRepo) {}
@@ -20,7 +21,7 @@ export class LoginUseCase {
     }
 
     const isMatch = await bcrypt.compare(password, user.password);
-    // const isMatch = true;
+
     if (!isMatch) {
       throw new Error('비밀번호가 일치하지 않습니다.');
     }
@@ -34,11 +35,12 @@ export class LoginUseCase {
         provider: user.provider,
       },
     };
-    const token = generateAccessToken(payload);
-    // const refresh_token = generateRefreshToken(payload);
+    const access_token = generateAccessToken(payload);
+    const refresh_token = generateRefreshToken(user.email.toLocaleLowerCase());
 
     return {
-      token,
+      access_token,
+      refresh_token,
     };
   }
 }

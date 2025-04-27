@@ -1,6 +1,7 @@
+import { generateAccessToken, generateRefreshToken } from '@/infra/utils/jwt';
+
 import { GoogleOAuthService } from '@/infra/oauth/GoogleOAuthService';
 import { UserRepo } from '@/domain/repositories/UserRepo';
-import { generateAccessToken } from '@/infra/utils/jwt';
 
 export class GoogleLoginUseCase {
   constructor(
@@ -23,7 +24,7 @@ export class GoogleLoginUseCase {
       const created = await this.userRepo.create({
         email: profile.email,
         password: '',
-        nickname: profile.nickname,
+        nickname: null,
         phone_number: null,
         provider: providerId,
         deleted_at: null,
@@ -42,8 +43,9 @@ export class GoogleLoginUseCase {
         provider: user.provider,
       },
     };
-    const accessToken = generateAccessToken(payload);
+    const access_token = generateAccessToken(payload);
+    const refresh_token = generateRefreshToken(user.email.toLocaleLowerCase());
 
-    return { token: accessToken, isNew };
+    return { access_token, refresh_token, isNew };
   }
 }

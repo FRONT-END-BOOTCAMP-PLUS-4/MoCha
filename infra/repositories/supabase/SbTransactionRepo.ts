@@ -42,4 +42,44 @@ export class SbTransactionRepo implements TransactionRepo {
       return [];
     }
   }
+
+  async GETdailyDetail(
+    userId: string,
+    date: string
+  ): Promise<
+    | {
+        id: number;
+        user_id: number;
+        category_id: number;
+        date: string;
+        amount: number;
+        memo: string | null;
+        is_expense: boolean;
+      }[]
+    | []
+  > {
+    try {
+      const { data, error } = await supabase
+        .from('transaction')
+        .select(
+          `
+          *,
+          category:category_id (
+            id,
+            name,
+            primary_color,
+            secondary_color
+          )
+        `
+        )
+        .eq('user_id', userId)
+        .gte('date', `${date}T00:00:00`) // 하루 시작
+        .lte('date', `${date}T23:59:59`); // 하루 끝까지
+
+      return data ? data : [];
+    } catch (error) {
+      console.error('error:', error);
+      return [];
+    }
+  }
 }

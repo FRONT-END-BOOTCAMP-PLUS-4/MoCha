@@ -26,15 +26,15 @@ export default function GoogleLoginButton() {
           throw new Error(data.error ?? '소셜 로그인 실패');
         }
 
-        const { token, isNew } = data;
+        const { access_token: token, refresh_token, isNew } = data;
 
         // 2) 로컬 스토리지 + zustand 저장
         localStorage.setItem('access_token', token);
+        localStorage.setItem('refresh_token', refresh_token);
         setAccessToken(token);
         const decoded = decodeJwt(token) as {
           user: { email: string; nickname: string; phone_number: string; provider: number };
         };
-        console.log('decoded: ', decoded);
         setUser(decoded.user);
 
         // 3) 신규 여부에 따라 분기

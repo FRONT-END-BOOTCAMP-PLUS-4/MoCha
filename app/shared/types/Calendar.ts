@@ -1,34 +1,41 @@
 import { ReactNode } from 'react';
 
 export type Category =
-  | 'salary'
-  | 'investment'
-  | 'allowance'
-  | 'refund'
-  | 'food'
-  | 'housing'
-  | 'transportation'
-  | 'communication'
-  | 'medical'
-  | 'shopping'
-  | 'education'
-  | 'culture'
-  | 'event'
-  | 'other';
+  | '급여'
+  | '투자수익'
+  | '용돈'
+  | '환급&환불'
+  | '식비'
+  | '생활'
+  | '교통'
+  | '통신'
+  | '의료'
+  | '쇼핑'
+  | '교육'
+  | '문화&여가'
+  | '경조사'
+  | '기타';
 
 export type Transaction = {
-  id: string;
-  category: Category;
-  memo?: string;
+  id: number;
+  user_id: string;
+  category_id: number;
+  date: string;
   amount: number;
-  type: 'income' | 'expense';
+  memo?: string;
+  is_expense: boolean;
+  category: {
+    id: number;
+    name: Category;
+    primary_color: string;
+    secondary_color: string;
+  };
 };
 
 export type DailyDetailModalProps = {
   date: string;
   income: number;
   expense: number;
-  transactions: Transaction[];
   onClose: () => void;
 };
 
@@ -37,6 +44,32 @@ export type DailyData = {
   is_expense: boolean;
   date: string;
 };
+
+export type DailyTransaction = {
+  income: number;
+  expense: number;
+  transactions: DailyData[];
+};
+
+export type SummaryHeaderProps = {
+  totalIncome: number;
+  totalExpense: number;
+};
+
+export type CategoryIconProps = {
+  name: Category;
+  primaryColor: string;
+  secondaryColor: string;
+};
+
+export interface CalendarEvent {
+  id: string;
+  title: string;
+  start: string;
+  extendedProps: {
+    type: 'income' | 'expense';
+  };
+}
 
 export type FloatingButtonProps = {
   onClick: () => void;

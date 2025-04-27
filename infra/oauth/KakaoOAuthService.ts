@@ -1,5 +1,6 @@
 export class KakaoOAuthService {
   async getUserProfile(code: string) {
+    /* 1) 토큰 교환 */
     const tokenRes = await fetch('https://kauth.kakao.com/oauth/token', {
       method: 'POST',
       headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
@@ -10,19 +11,25 @@ export class KakaoOAuthService {
         code,
       }),
     });
-    const tokenData = await tokenRes.json();
-    const accessToken = tokenData.access_token;
+    if (!tokenRes.ok) {
+      throw new Error('카카오 토큰 교환 실패');
+    }
+    const { access_token } = await tokenRes.json();
+    if (!access_token) {
+      throw new Error('access_token 없음');
+    }
 
+    /* 2) 프로필 조회 */
     const profileRes = await fetch('https://kapi.kakao.com/v2/user/me', {
-      headers: {
-        Authorization: `Bearer ${accessToken}`,
-        'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8',
-      },
+      headers: { Authorization: `Bearer ${access_token}` },
     });
-    const profileData = await profileRes.json();
+    if (!profileRes.ok) {
+      throw new Error('카카오 프로필 조회 실패');
+    }
+    const profile = await profileRes.json();
 
     return {
-      email: profileData.kakao_account?.email,
+      email: profile.kakao_account?.email ?? null,
       nickname: null,
     };
   }
