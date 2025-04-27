@@ -32,8 +32,8 @@ export class GETmonthlyCategoryUsecase {
         endMonth = 1;
       }
 
-      // DB가 timestamptz 으로 설정도었기 떄문에 다음달 1일 기준으로
-      const endDate = `${endYears}-${String(endMonth + 1).padStart(2,"0")}-1`;
+      // DB가 timestamptz 으로 설정되어었기 떄문에 다음달 1일 기준으로
+      const endDate = `${endYears}-${String(endMonth + 1).padStart(2,"0")}-01`;
       
       const categoryRepo = await this.categoryRepo.GETmonthlyCategory({ userId, startDate, endDate });
 
