@@ -24,7 +24,7 @@ export default function PasswordContainer() {
     if (!isValidPassword(passwordRef.current.value)) return alert('비밀번호 형식이 맞지않아요');
 
     try {
-      const fetchRequest: Response = await fetch('/api/user/edit', {
+      const fetchRequest: Response = await fetch('/api/user/password', {
         method: 'POST',
         headers: {
           Authorization: `Bearer ${localStorage.getItem('access_token')}`,
