@@ -14,12 +14,15 @@ const ResponsiveContainer = dynamic(
   }
 );
 
-export default function PeriodBarChart(props: {periodList:PeriodItem[]}): ReactElement {
-  const { periodList } = props;
+export default function PeriodBarChart(props: {periodList:PeriodItem[], years: number}): ReactElement {
+  const { periodList, years } = props;
+  const defaultValue = [{date: years, expenses: 0, incomes: 0}];
+  const isValue:boolean = !!defaultValue.length;
+  const replaceValue = periodList.length ? periodList : defaultValue;
 
   return (
     <ResponsiveContainer width={'100%'} height={'100%'}>
-      <BarChart data={periodList}>
+      <BarChart data={replaceValue}>
         <CartesianGrid strokeDasharray="3 3"/>
         <XAxis dataKey="date"
           interval="preserveStartEnd"/>
@@ -29,6 +32,7 @@ export default function PeriodBarChart(props: {periodList:PeriodItem[]}): ReactE
           axisLine={false}
           tickLine={false}
           tickFormatter={(value) => {
+            if(!isValue) return value;
             if (value >= 100000000) return `${(value / 100000000).toFixed(1)}억`;
             if (value >= 10000000) return `${(value / 10000000).toFixed(1)}천만`;
             if (value >= 1000000) return `${(value / 1000000).toFixed(1)}백만`;

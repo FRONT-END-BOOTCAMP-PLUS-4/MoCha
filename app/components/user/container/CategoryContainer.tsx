@@ -34,7 +34,7 @@ export default function CategoryContainer({ date }: CategoryContainerProps):Reac
 
   useEffect(() => {
     (async () => {
-      const res = await fetch(`/api/category?date=${date}`, {
+      const res = await fetch(`/api/category/chart?date=${date}`, {
         headers: { Authorization: `Bearer ${localStorage.getItem('access_token')}` },
       });
 
