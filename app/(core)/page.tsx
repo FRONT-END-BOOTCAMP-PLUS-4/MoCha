@@ -18,9 +18,15 @@ export default function Home() {
 
   useEffect(() => {
     const fetchMonthly = async () => {
+      const token = localStorage.getItem('access_token');
+      if (!token) {
+        console.warn('No access token found. Skipping fetch.');
+        return;
+      }
+
       try {
         const res = await fetch(`/api/transactions/monthly?start=${yearMonth}`, {
-          headers: { Authorization: `Bearer ${localStorage.getItem('access_token')}` },
+          headers: { Authorization: `Bearer ${token}` },
         });
 
         if (!res.ok) {
