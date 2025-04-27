@@ -20,15 +20,25 @@ type GETmonthlyCategoryRetrun = {
 };
 
 export class SbCategoryRepo implements CategoryRepo {
-  async GETmonthlyCategory(
-    props: GETmonthlyCategoryProps
-  ): Promise<GETmonthlyCategoryRetrun | []> {
-      const { userId, startDate, endDate } = props;
-      const { data, error } = await supabase
-      .rpc('get_category_monthly_list', { user_id:userId, start_date: startDate, end_date:endDate });
+  async GETmonthlyCategory(props: GETmonthlyCategoryProps): Promise<GETmonthlyCategoryRetrun | []> {
+    const { userId, startDate, endDate } = props;
+    const { data, error } = await supabase.rpc('get_category_monthly_list', {
+      user_id: userId,
+      start_date: startDate,
+      end_date: endDate,
+    });
 
-      if(error) throw new Error(error.message);
+    if (error) throw new Error(error.message);
 
-      return data ?? [];
+    return data ?? [];
+  }
+
+  async GETcategory(props: { userId: string }): Promise<{ id: string; name: string }[] | []> {
+    const { userId } = props;
+    const { data, error } = await supabase.from('category').select('id, name');
+
+    if (error) throw new Error(error.message);
+
+    return data ?? [];
   }
 }
