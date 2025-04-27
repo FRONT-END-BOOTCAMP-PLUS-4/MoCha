@@ -74,4 +74,21 @@ export class SbUserRepo implements UserRepo {
 
     return data.id;
   }
+
+  async updateInfo(
+    userId: string,
+    nickName: string,
+    phone_number: string
+  ): Promise<{ nickname: string; phone_number: string,  provider:string, email:string}> {
+    const { data, error } = await supabase
+      .from('user')
+      .update({ "nickname":nickName, "phone_number":phone_number })
+      .eq('id', userId)
+      .select("nickname, phone_number, provider, email")
+      .single();
+
+    if (error) throw new Error(error.message);
+
+    return data;
+  }
 }
