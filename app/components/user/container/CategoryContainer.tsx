@@ -1,6 +1,6 @@
 'use client';
 // package
-import { useEffect, useState } from 'react';
+import { useEffect, useState, ReactElement } from 'react';
 import { useRouter } from 'next/navigation';
 // slice
 import Category from '../presentation/Category';
@@ -26,7 +26,7 @@ export type CategoryItem = {
   color: string;
 };
 
-export default function CategoryContainer({ date }: CategoryContainerProps) {
+export default function CategoryContainer({ date }: CategoryContainerProps):ReactElement {
   const router = useRouter()
   const [fetchData, setFetchData] = useState<FetchData | null>(null);
   const [incomes, setIncomes] = useState<CategoryItem[]>([]);
