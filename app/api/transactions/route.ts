@@ -1,3 +1,4 @@
+import { DeleteTransactionUsecase } from '@/application/usecases/transactions/DeleteTransactionUsecase';
 import { GetDailyDetailUsecase } from '@/application/usecases/transactions/GetDailyDetailUsecase';
 import { PostTransactionUseCase } from '@/application/usecases/transactions/PostTransactionUsecase';
 import { SbTransactionRepo } from '@/infra/repositories/supabase/SbTransactionRepo';
@@ -43,6 +44,25 @@ export async function POST(req: NextRequest) {
     });
 
     return NextResponse.json({ status: 201, data });
+  } catch (err) {
+    return NextResponse.json({ status: 401 });
+  }
+}
+
+export async function DELETE(req: NextRequest) {
+  try {
+    const access_token = req.headers.get('authorization')?.replace('Bearer ', '');
+    if (!access_token) {
+      return NextResponse.json({ status: 401 });
+    }
+    const { user } = verifyAccessToken(access_token);
+    const id = user.id;
+    const transactionId = req.nextUrl.searchParams.get('transactionId');
+    const sbTransactionRepo = new SbTransactionRepo();
+    const deleteTransactionUsecase = new DeleteTransactionUsecase(sbTransactionRepo);
+    const data = await deleteTransactionUsecase.execute(transactionId);
+
+    return NextResponse.json({ status: 200, data });
   } catch (err) {
     return NextResponse.json({ status: 401 });
   }

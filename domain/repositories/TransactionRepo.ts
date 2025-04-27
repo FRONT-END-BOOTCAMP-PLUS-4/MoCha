@@ -35,4 +35,6 @@ export interface TransactionRepo {
     memo?: string | null;
     isExpense: boolean;
   }): Promise<{ id: number } | []>;
+
+  DELETEtransaction(id: string | null): Promise<{ id: number } | []>;
 }
