@@ -58,6 +58,6 @@ export default memo(function PeriodBarChartContainer({years}: PeriodBarChartCont
     }, [fetchData]);
 
     return(
-        <PeriodBarChart periodList={monthlyList} />
+        <PeriodBarChart periodList={monthlyList} years={years}/>
     );
 })
