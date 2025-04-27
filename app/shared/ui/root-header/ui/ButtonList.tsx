@@ -1,17 +1,27 @@
+'use client';
+
 import { useAuthStore } from '@/app/shared/stores/authStore';
-import { AlarmClock, CalendarDays, LogOut, User } from 'lucide-react';
+import { CalendarDays, LogOut, User } from 'lucide-react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { type ReactElement } from 'react';
+import { useEffect, useState, type ReactElement } from 'react';
 
 export default function ButtonList(): ReactElement {
   const router = useRouter();
+  const [isLogged, setIsLogged] = useState(false);
+
+  useEffect(() => {
+    const accessToken = localStorage.getItem('access_token');
+    if (accessToken) {
+      setIsLogged(true);
+    } else {
+      setIsLogged(false);
+    }
+  }, []);
+
   const logOut = async () => {
-    console.log('로그아웃 버튼 클릭');
     try {
-      await fetch('/api/auth/logout', {
-        method: 'POST',
-      });
+      setIsLogged(false);
 
       // zustand 초기화
       useAuthStore.getState().clearAuth();
@@ -21,7 +31,7 @@ export default function ButtonList(): ReactElement {
       localStorage.removeItem('refresh_token');
 
       // 로그인 페이지로 이동
-      router.push('/login');
+      router.push('/');
     } catch (err) {
       console.error('로그아웃 실패:', err);
     }
@@ -29,22 +39,26 @@ export default function ButtonList(): ReactElement {
 
   return (
     <>
-      <Link href="" className="hover:text-main flex gap-2">
+      <Link href="/" className="hover:text-main flex gap-2">
         <CalendarDays size={20} />
         <span>캘린더</span>
       </Link>
-      <Link href="" className="hover:text-main flex gap-2">
-        <AlarmClock size={20} />
-        <span>챌린지</span>
-      </Link>
-      <Link href="" className="hover:text-main flex gap-2">
+
+      <Link href="/user" className="hover:text-main flex gap-2">
         <User size={20} />
         <span>마이페이지</span>
       </Link>
-      <Link href="" className="hover:text-main flex gap-2">
-        <LogOut size={20} />
-        <span>로그인</span>
-      </Link>
+      {isLogged ? (
+        <button onClick={logOut} className="hover:text-main flex gap-2 hover:cursor-pointer">
+          <LogOut size={20} />
+          <span>로그아웃</span>
+        </button>
+      ) : (
+        <Link href="/login" className="hover:text-main flex gap-2">
+          <LogOut size={20} />
+          <span>로그인</span>
+        </Link>
+      )}
     </>
   );
 }
