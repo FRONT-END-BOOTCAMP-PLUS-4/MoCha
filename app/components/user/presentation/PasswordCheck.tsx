@@ -1,20 +1,20 @@
 'use client';
 
-import { ChangeEvent, useRef, useState, type ReactElement } from 'react';
+import { ChangeEvent, useRef, useState, type ReactElement, type RefObject } from 'react';
 import { Eye } from 'lucide-react';
 import { Button } from '@/app/shared/ui/button/index';
 import { isValidPassword } from '@/app/shared/consts/validation';
 import { cn } from '@/app/shared/utils/cn';
 
 type PasswordCheckProps = {
-  nextProcess: () => void;
   closeModal: () => void;
+  passwordRef: RefObject<HTMLInputElement | null>;
+  submitPassword: () => void;
 } & {};
 
 export default function PasswordCheck(props: PasswordCheckProps): ReactElement {
-  const { nextProcess, closeModal } = props;
+  const { closeModal, passwordRef, submitPassword } = props;
 
-  const passwordRef = useRef(null);
   const [passwordValidation, setPasswordValidation] = useState(false);
   const checkValidation = (event: ChangeEvent<HTMLInputElement>) => {
     const target = event.target.value;
@@ -44,7 +44,7 @@ export default function PasswordCheck(props: PasswordCheckProps): ReactElement {
             'cursor-pointer': passwordValidation,
           })}
           disabled={passwordValidation ? false : true}
-          onClick={nextProcess}
+          onClick={submitPassword}
         >
           다음
         </Button>
