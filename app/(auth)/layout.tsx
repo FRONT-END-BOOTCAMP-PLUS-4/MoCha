@@ -27,5 +27,5 @@ export default function AuthLayout({ children }: { children: ReactNode }) {
     );
   }
 
-  return <div className="bg-main-bg m-auto max-w-(--layout-w-auth)">{children}</div>;
+  return <div className="bg-main-bg m-auto max-w-(--layout-w-auth) p-3">{children}</div>;
 }

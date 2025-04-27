@@ -5,7 +5,10 @@ import { useAuthStore } from '@/app/shared/stores/authStore';
 import { useEffect } from 'react';
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
-  const { user, accessToken, setUser, setAccessToken, clearAuth } = useAuthStore.getState();
+  const accessToken = useAuthStore((state) => state.accessToken);
+  const setUser = useAuthStore((state) => state.setUser);
+  const setAccessToken = useAuthStore((state) => state.setAccessToken);
+  const clearAuth = useAuthStore((state) => state.clearAuth);
 
   useEffect(() => {
     async function initAuth() {
