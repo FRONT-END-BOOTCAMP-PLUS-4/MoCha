@@ -24,4 +24,7 @@ export interface UserRepo {
 
   // provider 이름으로 provider id 가져오기
   getProviderIdByProviderName(providerName: string): Promise<number>;
+
+  // 닉네임, 전화번호 변경
+  updateInfo(userId:string, nickname:string, phone_number:string):Promise<{ nickname: string; phone_number: string,  provider:string, email:string}>;
 }
