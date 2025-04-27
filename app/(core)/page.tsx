@@ -11,8 +11,9 @@ export default function Home() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [yearMonth, setYearMonth] = useState<string>('');
   const [monthly, setMonthly] = useState({
-    totalIncome: 0,
-    totalExpense: 0,
+    date: '',
+    expenses: 0,
+    incomes: 0,
   });
 
   useEffect(() => {
@@ -27,7 +28,7 @@ export default function Home() {
         }
 
         const data = await res.json();
-        setMonthly(data.data);
+        setMonthly(data.data[0]);
       } catch (error) {
         console.error('Error fetching monthly summary:', error);
         // 필요하면 setMonthly({ totalIncome: 0, totalExpense: 0 }) 초기화도 가능
@@ -36,11 +37,10 @@ export default function Home() {
 
     fetchMonthly();
   }, [yearMonth]);
-  console.log(monthly);
 
   return (
     <div>
-      <SummaryHeader totalExpense={monthly.totalExpense} totalIncome={monthly.totalIncome} />
+      <SummaryHeader totalExpense={monthly.expenses} totalIncome={monthly.incomes} />
       <FullCalendarWrapper onYearMonthChange={setYearMonth} />
       <FloatingButton onClick={() => setIsModalOpen(true)} />
 
