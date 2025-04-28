@@ -31,7 +31,7 @@ export default function ButtonList(): ReactElement {
       localStorage.removeItem('refresh_token');
 
       // 로그인 페이지로 이동
-      router.push('/');
+      router.push('/login');
     } catch (err) {
       console.error('로그아웃 실패:', err);
     }
