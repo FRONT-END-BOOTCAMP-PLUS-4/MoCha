@@ -91,4 +91,22 @@ export class SbUserRepo implements UserRepo {
 
     return data;
   }
+
+  async deleteUser( userId:string ): Promise<boolean> {
+
+    const { data, error } = await supabase
+    .from('user')
+    .update({
+      nickname: null,
+      phone_number: null,
+      email: new Date().toISOString(),
+      deleted_at: new Date().toISOString()
+    })
+    .eq('id', userId);
+
+    if (error) throw new Error(error.message);
+
+      
+    return true;
+  }
 }
