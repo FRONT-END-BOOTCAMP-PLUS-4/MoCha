@@ -1,20 +1,23 @@
 'use client';
 
+import { DailyData, DailyTransaction } from '@/app/shared/types/Calendar';
+import { useEffect, useMemo, useState } from 'react';
+
+import DailyDetailModal from './modal/DailyDetailModal';
 import FullCalendar from '@fullcalendar/react';
 import dayGridPlugin from '@fullcalendar/daygrid';
-import interactionPlugin from '@fullcalendar/interaction';
-import { useEffect, useMemo, useState } from 'react';
-import { DailyData, DailyTransaction } from '@/app/shared/types/Calendar';
-import DailyDetailModal from './modal/DailyDetailModal';
-import { formattedDate } from '@/app/shared/utils/formattedDate';
 import { formatDailyEvents } from '@/app/shared/utils/formatDailyEvents';
+import { formattedDate } from '@/app/shared/utils/formattedDate';
+import interactionPlugin from '@fullcalendar/interaction';
 
 export default function FullCalendarWrapper({
   onYearMonthChange,
   refetchSignal,
+  onRefetch,
 }: {
   onYearMonthChange: (value: string) => void;
   refetchSignal: boolean;
+  onRefetch: () => void;
 }) {
   const [selectedDate, setSelectedDate] = useState<string | null>(null);
   const [selectedDetail, setSelectedDetail] = useState<DailyTransaction | null>(null);
@@ -135,7 +138,7 @@ export default function FullCalendarWrapper({
             document.body.style.overflow = 'auto';
             setSelectedDate(null);
             setSelectedDetail(null);
-            window.location.reload();
+            onRefetch();
           }}
         />
       )}
