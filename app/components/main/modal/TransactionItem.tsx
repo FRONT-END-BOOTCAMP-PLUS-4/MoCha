@@ -1,7 +1,7 @@
 'use client';
 
-import { Transaction } from '@/app/shared/types/Calendar';
 import CategoryIcon from './CategoryIcon';
+import { Transaction } from '@/app/shared/types/Calendar';
 import { Trash2 } from 'lucide-react';
 
 export default function TransactionItem({
@@ -25,8 +25,8 @@ export default function TransactionItem({
         </div>
       </div>
       <div className="flex flex-col">
-        <button onClick={onClick}>
-          <Trash2 className="ml-auto" size={14} />
+        <button onClick={onClick} className="hover:cursor-pointer">
+          <Trash2 className="text-gray-5 ml-auto" size={14} />
         </button>
         <p className={`font-semibold ${item.is_expense ? 'text-expense' : 'text-income'}`}>
           {item.is_expense ? '-' : '+'}
