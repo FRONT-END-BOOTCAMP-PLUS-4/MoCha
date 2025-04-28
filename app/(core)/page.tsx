@@ -1,3 +1,4 @@
+// Home.tsx
 'use client';
 
 import { useEffect, useState } from 'react';
@@ -15,51 +16,27 @@ export default function Home() {
   const accessToken = useAuthStore((state) => state.accessToken);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [yearMonth, setYearMonth] = useState<string>('');
-  const [monthly, setMonthly] = useState({
-    date: '',
-    expenses: 0,
-    incomes: 0,
-  });
+  const [monthly, setMonthly] = useState({ date: '', expenses: 0, incomes: 0 });
   const [refetchCalendar, setRefetchCalendar] = useState(false);
 
   const fetchMonthly = async () => {
     const token = localStorage.getItem('access_token');
     if (!token || !yearMonth) return;
-
     try {
       const res = await fetch(`/api/transactions/monthly?start=${yearMonth}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
-      if (!res.ok) throw new Error('Failed to fetch monthly data');
-
-      // 응답 구조 분리
-      const result = (await res.json()) as {
-        status: number;
-        data: Array<{ date: string; expenses: number; incomes: number }>;
-      };
-
-      const items = result.data;
-      if (Array.isArray(items) && items.length > 0) {
-        setMonthly(items[0]);
-      } else {
-        // 데이터가 없으면 0으로 초기화
-        setMonthly({ date: '', expenses: 0, incomes: 0 });
-      }
-    } catch (error) {
-      console.error('Error fetching monthly summary:', error);
+      if (!res.ok) throw new Error();
+      const { data } = await res.json();
+      setMonthly(data[0] || { date: '', expenses: 0, incomes: 0 });
+    } catch {
       setMonthly({ date: '', expenses: 0, incomes: 0 });
     }
   };
 
-  // FloatingButton 클릭 핸들러
   const handleFloatingClick = () => {
-    if (!accessToken) {
-      // 로그인 안 된 상태면 로그인 페이지로
-      router.push('/login');
-    } else {
-      // 로그인 돼 있으면 모달 열기
-      setIsModalOpen(true);
-    }
+    if (!accessToken) router.push('/login');
+    else setIsModalOpen(true);
   };
 
   const handleFormClose = () => {
@@ -72,9 +49,7 @@ export default function Home() {
   }, [yearMonth]);
 
   useEffect(() => {
-    if (refetchCalendar) {
-      fetchMonthly();
-    }
+    fetchMonthly();
   }, [refetchCalendar]);
 
   return (
@@ -86,7 +61,6 @@ export default function Home() {
         onRefetch={() => setRefetchCalendar((prev) => !prev)}
       />
       <FloatingButton onClick={handleFloatingClick} />
-
       <Modal isOpen={isModalOpen}>
         <IncomeExpenseForm onClose={handleFormClose} />
       </Modal>

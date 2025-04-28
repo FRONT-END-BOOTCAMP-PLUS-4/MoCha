@@ -93,9 +93,7 @@ export default function FullCalendarWrapper({
   }, [yearMonth]);
 
   useEffect(() => {
-    if (refetchSignal) {
-      fetchDailyData();
-    }
+    fetchDailyData();
   }, [refetchSignal]);
 
   return (

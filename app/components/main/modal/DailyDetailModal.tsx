@@ -1,10 +1,11 @@
 'use client';
 
 import { DailyDetailModalProps, Transaction } from '@/app/shared/types/Calendar';
-import { X } from 'lucide-react';
+import { useEffect, useState } from 'react';
+
 import SummaryHeader from '../SummaryHeader';
 import TransactionItem from './TransactionItem';
-import { useEffect, useState } from 'react';
+import { X } from 'lucide-react';
 
 export default function DailyDetailModal({
   date,
@@ -71,7 +72,7 @@ export default function DailyDetailModal({
       <div className="flex h-screen w-full max-w-md flex-col bg-white px-2 md:h-3/4">
         <div className="border-b-gray-3 flex items-center justify-between border-b px-6 py-4">
           <h2 className="text-lg font-bold">{date}</h2>
-          <button onClick={onClose}>
+          <button onClick={onClose} className="hover:cursor-pointer">
             <X className="text-gray-6" />
           </button>
         </div>

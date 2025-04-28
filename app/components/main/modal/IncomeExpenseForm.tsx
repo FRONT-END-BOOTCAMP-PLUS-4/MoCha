@@ -1,9 +1,10 @@
 'use client';
 
-import { IncomeExpenseFormProps } from '@/app/shared/types/Calendar';
-import { Button } from '@/app/shared/ui/button';
-import Input from '@/app/shared/ui/input';
 import { useEffect, useState } from 'react';
+
+import { Button } from '@/app/shared/ui/button';
+import { IncomeExpenseFormProps } from '@/app/shared/types/Calendar';
+import Input from '@/app/shared/ui/input';
 
 export default function IncomeExpenseForm({ onClose }: IncomeExpenseFormProps) {
   const [selectedTab, setSelectedTab] = useState<'income' | 'expense'>('income');
