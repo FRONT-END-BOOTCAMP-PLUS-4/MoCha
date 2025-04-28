@@ -27,4 +27,7 @@ export interface UserRepo {
 
   // 닉네임, 전화번호 변경
   updateInfo(userId:string, nickname:string, phone_number:string):Promise<{ nickname: string; phone_number: string,  provider:string, email:string}>;
+
+  // 회원탈퇴
+  deleteUser( userId:string ):Promise<boolean>;
 }
