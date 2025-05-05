@@ -1,6 +1,7 @@
-'use client';
-
 import './globals.css';
+
+import { AuthProvider } from './components/auth/AuthProvider';
+import { GoogleOAuthProvider } from '@react-oauth/google';
 
 export default function RootLayout({
   children,
@@ -8,11 +9,11 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <body>
-        <div className="mx-auto max-w-[1440px]">
-          <div className="bg-main-bg">{children}</div>
-        </div>
+    <html lang="ko">
+      <body className="bg-main-bg">
+        <GoogleOAuthProvider clientId={process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID!}>
+          <AuthProvider>{children}</AuthProvider>
+        </GoogleOAuthProvider>
       </body>
     </html>
   );
